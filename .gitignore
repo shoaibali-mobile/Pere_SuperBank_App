@@ -1,0 +1,109 @@
+# ============================================
+# Production-Grade Android Multi-Module .gitignore
+# Bank-Standard Configuration
+# ============================================
+
+# ============================================
+# Build Outputs (Recursive - All Modules)
+# ============================================
+**/build/
+**/out/
+**/.gradle/
+**/captures/
+**/.externalNativeBuild/
+**/.cxx/
+
+# ============================================
+# IDE Files (Android Studio / IntelliJ)
+# ============================================
+**/.idea/
+.idea/
+.idea/**/*
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+
+# ============================================
+# Security & Local Configuration
+# ============================================
+# Local SDK paths (prevents breaking teammate builds)
+local.properties
+**/local.properties
+
+# Keystore files (NEVER commit signing keys!)
+*.jks
+*.keystore
+*.keystore.properties
+**/*.jks
+**/*.keystore
+
+# Google Services (may contain API keys)
+google-services.json
+**/google-services.json
+
+# ============================================
+# System Files
+# ============================================
+.DS_Store
+**/.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ============================================
+# AI Tools & Cursor Configuration
+# ============================================
+.cursorrules/
+.cursor/
+**/.cursorrules/
+**/.cursor/
+
+# ============================================
+# Gradle
+# ============================================
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# ============================================
+# Android Generated Files
+# ============================================
+*.ap_
+*.apk
+*.aab
+*.dex
+*.class
+bin/
+gen/
+proguard/
+*.log
+
+# ============================================
+# NDK
+# ============================================
+obj/
+.externalNativeBuild/
+
+# ============================================
+# Fastlane
+# ============================================
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# ============================================
+# Miscellaneous
+# ============================================
+*.swp
+*.swo
+*~
+.navigation/
+captures/
+.externalNativeBuild
+.cxx/
