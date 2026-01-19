@@ -1,4 +1,4 @@
-package com.shoaib.pere_super_app_bank
+package com.shoaib.profile.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,29 +8,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.shoaib.profile.ui.login.LoginScreen
 import com.shoaib.profile.ui.login.LoginViewModel
-import com.shoaib.pere_super_app_bank.ui.theme.PereSuperAppBankTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * Main Activity - Entry point of the app.
- * Shows the Login Screen.
- */
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-    
-    // Inject ViewModel via Hilt
-    private val viewModel: LoginViewModel by viewModels()
-    
+class ProfileActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val viewModel: LoginViewModel by viewModels()
+        
         setContent {
-            PereSuperAppBankTheme {
+            MaterialTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize()
                 ) {
+                    // Display Login Screen
                     LoginScreen(viewModel = viewModel)
                 }
             }
