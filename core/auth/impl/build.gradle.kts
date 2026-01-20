@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)  // Apply serialization plugin early
     alias(libs.plugins.hilt.android)
     id("org.jetbrains.kotlin.kapt")
-    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -64,8 +64,7 @@ dependencies {
 
 
     // Kotlinx Serialization (for JSON)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    implementation("org.jetbrains.kotlin:kotlin-serialization:2.0.21")
+    implementation(libs.kotlinx.serialization.json)
 
     // Logging
     implementation("com.jakewharton.timber:timber:5.0.1")

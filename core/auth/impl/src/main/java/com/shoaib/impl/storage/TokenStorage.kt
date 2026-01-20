@@ -158,6 +158,10 @@ class TokenStorage @Inject constructor(
         }
     }
 
+    suspend fun getAccessToken(): String? {
+        return getTokens()?.accessToken
+    }
+
     /**
      * Get tokens as Flow (reactive)
      * Updates automatically when tokens change

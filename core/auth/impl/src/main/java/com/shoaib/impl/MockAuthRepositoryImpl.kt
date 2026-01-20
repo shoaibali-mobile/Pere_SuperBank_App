@@ -1,6 +1,7 @@
 package com.shoaib.impl
 
 import com.shoaib.api.AuthRepository
+import com.shoaib.api.model.AuthError
 import com.shoaib.api.model.AuthTokens
 import com.shoaib.api.model.AuthUser
 import com.shoaib.api.model.Result
@@ -55,8 +56,11 @@ class MockAuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun validateToken(): Result<Boolean> {
-        return Result.Success(true)
+        val tokens = tokenStorage.getTokens()
+        val isValid = tokens?.accessToken?.isNotBlank() == true
+        return Result.Success(isValid)
     }
+
 
     override fun getCurrentUser(): Flow<AuthUser?> {
         return userStorage.getUserFlow()
@@ -102,4 +106,19 @@ class MockAuthRepositoryImpl @Inject constructor(
     override suspend fun clearSession(): Result<Unit> {
         return logout()
     }
+
+    override suspend fun hasPin(): Boolean {
+        val user = userStorage.getUser()
+        return user?.email == "test@bank.com"
+    }
+
+    override suspend fun verifyPin(pin: String): Result<Boolean> {
+        delay(500)
+        return if (pin == "1234") Result.Success(true) else Result.Failure(AuthError.InvalidCredentials("Wrong PIN"))
+    }
+
+    override suspend fun setPin(pin: String): Result<Unit> {
+        return Result.Success(Unit)
+    }
+
 }

@@ -11,6 +11,9 @@ android {
 
     defaultConfig {
         minSdk = 24
+        
+        // Enable MultiDex to prevent test APK packaging failures
+        multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

@@ -16,6 +16,8 @@ kotlinxCoroutines = "1.10.2"
 lifecycleViewmodel = "2.10.0"
 lifecycleViewmodelCompose = "2.7.0"
 javapoet = "1.13.0"
+navigationCompose = "2.8.5"
+kotlinxSerialization = "1.7.3"
 
 
 [libraries]
@@ -44,6 +46,8 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycleViewmodel" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 
 [plugins]
@@ -54,4 +58,3 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-

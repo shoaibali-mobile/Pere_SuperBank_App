@@ -1,4 +1,4 @@
-package com.shoaib.profile.ui.login
+package com.shoaib.auth.ui.login
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,51 +11,34 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
-
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
+    onLoginSuccess: () -> Unit,
+    onRegisterClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    
-
     var email by remember { mutableStateOf("") }
-
     var password by remember { mutableStateOf("") }
-
     var passwordVisible by remember { mutableStateOf(false) }
-    
-    val context = LocalContext.current
-    
-
-    
 
     LaunchedEffect(uiState) {
         when (uiState) {
             is LoginUiState.Success -> {
-                // Show Toast on success
-                android.widget.Toast.makeText(
-                    context,
-                    "Login successful! Welcome ${(uiState as LoginUiState.Success).user.name}",
-                    android.widget.Toast.LENGTH_LONG
-                ).show()
+                // Call the callback to navigate to PIN screen
+                onLoginSuccess()
             }
-            else -> { /* Do nothing for other states */ }
+            else -> { }
         }
     }
-    
 
-    
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -63,7 +46,6 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Title
         Text(
             text = "Welcome Back",
             style = MaterialTheme.typography.headlineLarge,
@@ -77,73 +59,52 @@ fun LoginScreen(
             modifier = Modifier.padding(bottom = 32.dp)
         )
         
-        // Email Field
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
             placeholder = { Text("Enter your email") },
-            leadingIcon = {
-                Icon(Icons.Default.Email, contentDescription = "Email")
-            },
+            leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
             singleLine = true,
-            enabled = uiState !is LoginUiState.Loading  // Disable during loading
+            enabled = uiState !is LoginUiState.Loading
         )
         
-        // Password Field
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
             placeholder = { Text("Enter your password") },
-            leadingIcon = {
-                Icon(Icons.Default.Lock, contentDescription = "Password")
-            },
+            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password") },
             trailingIcon = {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
-                        imageVector = if (passwordVisible) Icons.Default.VisibilityOff 
-                                     else Icons.Default.Visibility,
-                        contentDescription = if (passwordVisible) "Hide password" 
-                                            else "Show password"
+                        imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                        contentDescription = if (passwordVisible) "Hide password" else "Show password"
                     )
                 }
             },
-            visualTransformation = if (passwordVisible) VisualTransformation.None 
-                                  else PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
             singleLine = true,
-            enabled = uiState !is LoginUiState.Loading  // Disable during loading
+            enabled = uiState !is LoginUiState.Loading
         )
         
-        // Error Message
         if (uiState is LoginUiState.Error) {
             Text(
                 text = (uiState as LoginUiState.Error).message,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
             )
         }
         
-        // Login Button
         Button(
             onClick = { viewModel.login(email, password) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            enabled = uiState !is LoginUiState.Loading && 
-                     email.isNotBlank() && 
-                     password.isNotBlank()
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            enabled = uiState !is LoginUiState.Loading && email.isNotBlank() && password.isNotBlank()
         ) {
             if (uiState is LoginUiState.Loading) {
                 CircularProgressIndicator(
@@ -155,7 +116,13 @@ fun LoginScreen(
             }
         }
         
-        // Test Credentials Hint (Remove in production!)
+        TextButton(
+            onClick = onRegisterClick,
+            modifier = Modifier.padding(top = 8.dp)
+        ) {
+            Text("New user? Register")
+        }
+
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = "Test: test@bank.com / 123456",

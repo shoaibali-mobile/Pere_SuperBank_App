@@ -3,25 +3,28 @@ package com.shoaib.pere_super_app_bank
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.shoaib.profile.ui.login.LoginScreen
-import com.shoaib.profile.ui.login.LoginViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.shoaib.auth.navigation.authGraph
+import com.shoaib.navigation.HomeRoute
 import com.shoaib.pere_super_app_bank.ui.theme.PereSuperAppBankTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * Main Activity - Entry point of the app.
- * Shows the Login Screen.
- */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    
-    // Inject ViewModel via Hilt
-    private val viewModel: LoginViewModel by viewModels()
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,9 +34,71 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LoginScreen(viewModel = viewModel)
+                    AppNavigation()
                 }
             }
         }
     }
 }
+
+/**
+ * AppNavigation - The "Glue"
+ * 
+ * 1. Collects the start destination from MainViewModel.
+ * 2. Sets up the NavHost.
+ * 3. Plug-in feature graphs (LEGO style).
+ */
+@Composable
+fun AppNavigation() {
+    val navController = rememberNavController()
+    val mainViewModel: MainViewModel = hiltViewModel()
+    val startDestination by mainViewModel.startDestination.collectAsStateWithLifecycle()
+
+    if (startDestination == null) {
+        LoadingScreen()
+        return
+    }
+
+    NavHost(
+        navController = navController,
+        startDestination = startDestination!!,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // LEGO Block: Auth Feature (Login + PIN)
+        authGraph(
+            navController = navController,
+            onNavigateToHome = {
+                navController.navigate(HomeRoute) {
+                    // Clear the entire auth stack when reaching Home
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                }
+            }
+        )
+
+        // Home Screen (Testing - Direct in MainActivity)
+        composable<HomeRoute> {
+            HomeScreen()
+        }
+    }
+}
+
+@Composable
+private fun LoadingScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun HomeScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("Homescreen")
+    }
+}
+

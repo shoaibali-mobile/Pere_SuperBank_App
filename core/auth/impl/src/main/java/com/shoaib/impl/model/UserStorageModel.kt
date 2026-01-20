@@ -31,7 +31,8 @@ internal data class UserData(
     val lastLoginAt: Long?,
     val requiresPasswordChange: Boolean,
     val mfaEnabled: Boolean,
-    val preferredLanguage: String
+    val preferredLanguage: String,
+    val pin: String? = null
 )
 
 /**
@@ -77,6 +78,7 @@ internal fun AuthUser.toUserData(): UserData {
         lastLoginAt = lastLoginAt,
         requiresPasswordChange = requiresPasswordChange,
         mfaEnabled = mfaEnabled,
-        preferredLanguage = preferredLanguage
+        preferredLanguage = preferredLanguage,
+        pin = null // PIN is stored separately in TokenStorage
     )
 }
