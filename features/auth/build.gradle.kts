@@ -77,6 +77,7 @@ dependencies {
     // ===== CORE MODULES =====
     implementation(project(":core:auth:api"))
     implementation(project(":core:navigation"))
+    implementation(project(":foundation:design"))
     
     // Testing
     testImplementation(libs.junit)
