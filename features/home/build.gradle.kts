@@ -41,6 +41,8 @@ android {
 }
 
 dependencies {
+
+    implementation(project(":core:auth:api"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -57,8 +59,13 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":foundation:design"))
     
+    // ===== VIEWMODEL & LIFECYCLE =====
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    
     // ===== HILT =====
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
     
     testImplementation(libs.junit)

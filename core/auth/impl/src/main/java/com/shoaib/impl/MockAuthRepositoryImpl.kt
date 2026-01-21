@@ -26,7 +26,7 @@ class MockAuthRepositoryImpl @Inject constructor(
             val user = AuthUser(
                 id = "123",
                 email = email,
-                name = "Test User",
+                name = "John Wick",
                 phoneNumber = "+1234567890",
                 isEmailVerified = true,
                 isPhoneVerified = true

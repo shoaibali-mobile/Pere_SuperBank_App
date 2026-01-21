@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.WifiTethering
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,20 +34,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shoaib.design.components.GlassScaffold
 import com.shoaib.design.theme.SuperAppDesign
 import com.shoaib.home.model.DashboardItem
+import com.shoaib.home.viewmodel.HomeViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
-/**
- * Glassmorphism Dashboard Screen
- * 
- * Uses shared design system from :foundation:design
- */
 @Composable
 fun HomeScreen(
     items: List<DashboardItem> = defaultDashboardItems(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val user by viewModel.user.collectAsStateWithLifecycle()
+    
+    // Extract display name in UI layer
+    val displayName = if (user != null && user!!.name.isNotBlank()) {
+        "Hi, ${user!!.name}"
+    } else {
+        "Hi, there"
+    }
+
     GlassScaffold(
         modifier = modifier,
     ) { innerPadding ->
@@ -56,7 +65,7 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp, vertical = 16.dp)
         ) {
-            HeaderSection()
+            HeaderSection(displayName = displayName)
             Spacer(Modifier.height(24.dp))
             DashboardGrid(items)
         }
@@ -64,9 +73,9 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HeaderSection() {
+private fun HeaderSection(displayName: String) {
     Text(
-        text = "Dashboard",
+        text = displayName,
         fontSize = 42.sp,
         fontWeight = FontWeight.ExtraBold,
         color = SuperAppDesign.TextPrimary,
@@ -225,6 +234,6 @@ private fun HeaderSectionPreview() {
             .background(brush = SuperAppDesign.backgroundBrush)
             .padding(20.dp)
     ) {
-        HeaderSection()
+        HeaderSection(displayName = "Hi, Shoaib")
     }
 }
