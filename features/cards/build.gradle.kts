@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-        
+
         // Enable MultiDex to prevent test APK packaging failures
         multiDexEnabled = true
 

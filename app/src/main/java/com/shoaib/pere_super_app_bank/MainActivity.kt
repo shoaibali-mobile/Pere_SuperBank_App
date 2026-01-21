@@ -19,6 +19,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shoaib.auth.navigation.authGraph
+import com.shoaib.home.navigation.homeGraph
+import com.shoaib.home.ui.HomeScreen
 import com.shoaib.navigation.HomeRoute
 import com.shoaib.pere_super_app_bank.ui.theme.PereSuperAppBankTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,13 +43,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-/**
- * AppNavigation - The "Glue"
- * 
- * 1. Collects the start destination from MainViewModel.
- * 2. Sets up the NavHost.
- * 3. Plug-in feature graphs (LEGO style).
- */
+
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
@@ -75,10 +71,7 @@ fun AppNavigation() {
             }
         )
 
-        // Home Screen (Testing - Direct in MainActivity)
-        composable<HomeRoute> {
-            HomeScreen()
-        }
+        homeGraph()
     }
 }
 
@@ -89,16 +82,6 @@ private fun LoadingScreen() {
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
-    }
-}
-
-@Composable
-private fun HomeScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("Homescreen")
     }
 }
 

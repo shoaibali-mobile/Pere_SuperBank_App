@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-        
+
         // Enable MultiDex to prevent mergeExtDexDebugAndroidTest failure
         multiDexEnabled = true
 

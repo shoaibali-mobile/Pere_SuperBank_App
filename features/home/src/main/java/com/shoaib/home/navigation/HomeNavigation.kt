@@ -5,11 +5,10 @@ import androidx.navigation.compose.composable
 import com.shoaib.home.ui.HomeScreen
 import com.shoaib.navigation.HomeRoute
 
-/**
- * Home Navigation Graph
- */
-//fun NavGraphBuilderexhomeGraph() {
-//    composable<HomeRoute> {
-//        HomeScreen()
-//    }
-//}
+
+
+fun NavGraphBuilder.homeGraph(){
+    composable<HomeRoute> {
+        HomeScreen()
+    }
+}
