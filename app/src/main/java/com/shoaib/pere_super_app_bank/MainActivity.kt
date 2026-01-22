@@ -71,7 +71,11 @@ fun AppNavigation() {
         )
 
         cardsGraph(
-            onBack = { navController.popBackStack() }
+            onBack = {
+               navController.navigate(HomeRoute){
+                   popUpTo(HomeRoute) { inclusive = false }
+               }
+            }
         )
 
         homeGraph(
