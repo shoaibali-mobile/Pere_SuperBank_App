@@ -15,6 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.shoaib.design.components.GlassScaffold
+import com.shoaib.design.theme.SuperAppDesign
 
 @Composable
 fun PinScreen(
@@ -23,46 +25,48 @@ fun PinScreen(
 ) {
     val uiState by viewModel.uistate.collectAsStateWithLifecycle()
 
-    // Handle Success Navigation
     LaunchedEffect(uiState) {
         if (uiState is PinUiState.Success) {
             onPinSuccess()
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        when (val state = uiState) {
-            is PinUiState.Loading -> CircularProgressIndicator()
-            is PinUiState.Content -> {
-                Text(
-                    text = if (state.mode == PinMode.Setup) "Create a PIN" else "Enter PIN",
-                    style = MaterialTheme.typography.headlineMedium
-                )
+    GlassScaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            when (val state = uiState) {
+                is PinUiState.Loading -> CircularProgressIndicator(color = Color.White)
+                is PinUiState.Content -> {
+                    Text(
+                        text = if (state.mode == PinMode.Setup) "Create a PIN" else "Enter PIN",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = SuperAppDesign.TextPrimary
+                    )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
 
-                // The Dots
-                PinIndicator(length = 4, filledCount = state.enteredPin.length)
+                    PinIndicator(length = 4, filledCount = state.enteredPin.length)
 
-                if (state.error != null) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = state.error, color = MaterialTheme.colorScheme.error)
+                    if (state.error != null) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(text = state.error, color = Color(0xFFEF4444))
+                    }
+
+                    Spacer(modifier = Modifier.height(48.dp))
+
+                    PinKeypad(
+                        onDigitClick = { viewModel.onDigitEntered(it) },
+                        onBackspaceClick = { viewModel.onBackspace() }
+                    )
                 }
-
-                Spacer(modifier = Modifier.height(48.dp))
-
-                // The Numpad
-                PinKeypad(
-                    onDigitClick = { viewModel.onDigitEntered(it) },
-                    onBackspaceClick = { viewModel.onBackspace() }
-                )
-            }
-            is PinUiState.Success -> {
-                // Success handled by LaunchedEffect above
+                is PinUiState.Success -> { }
             }
         }
     }
@@ -77,8 +81,8 @@ fun PinIndicator(length: Int, filledCount: Int) {
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
-                    .background(if (isFilled) MaterialTheme.colorScheme.primary else Color.Transparent)
-                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                    .background(if (isFilled) Color.White else Color.Transparent)
+                    .border(2.dp, Color.White.copy(alpha = 0.5f), CircleShape)
             )
         }
     }
@@ -99,18 +103,24 @@ fun PinKeypad(onDigitClick: (String) -> Unit, onBackspaceClick: () -> Unit) {
                         Spacer(modifier = Modifier.size(64.dp))
                     } else if (key == "DEL") {
                         TextButton(onClick = onBackspaceClick, modifier = Modifier.size(64.dp)) {
-                            Text("⌫", fontSize = 24.sp)
+                            Text("⌫", fontSize = 24.sp, color = Color.White)
                         }
                     } else {
                         Box(
                             modifier = Modifier
                                 .size(64.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .background(Color.White.copy(alpha = 0.15f))
+                                .border(1.dp, Color.White.copy(alpha = 0.3f), CircleShape)
                                 .clickable { onDigitClick(key) },
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(text = key, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = key,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
                         }
                     }
                 }

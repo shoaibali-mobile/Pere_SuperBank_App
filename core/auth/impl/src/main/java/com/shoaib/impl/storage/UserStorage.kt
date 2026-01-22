@@ -21,31 +21,7 @@ import java.security.GeneralSecurityException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Encrypted storage for user data using Android Keystore.
- * 
- * 🔐 SECURITY FEATURES:
- * - Uses Android Keystore automatically (via MasterKey API)
- * - Keys stored in hardware-backed keystore (if device supports it)
- * - Data encrypted with AES-256-GCM
- * - Protects sensitive user information
- * 
- * 💣 KEYSTORE INVALIDATION HANDLING:
- * Android Keystore keys can become invalid when:
- * - User removes/changes screen lock (PIN/Fingerprint)
- * - User clears "All Data" in System Settings
- * - Hardware-backed security detects tampering
- * 
- * When this happens, we FORCE LOGOUT by clearing all corrupted data.
- * This ensures the user can log in fresh instead of being stuck.
- * 
- * HOW IT WORKS:
- * 1. MasterKey.Builder creates a key in Android Keystore
- * 2. EncryptedSharedPreferences uses this key to encrypt/decrypt data
- * 3. All user data is encrypted before writing to disk
- * 4. Data is decrypted automatically when reading
- * 5. If decryption fails → Clear all data → Force logout
- */
+
 @Singleton
 class UserStorage @Inject constructor(
     @ApplicationContext private val context: Context
@@ -131,18 +107,12 @@ class UserStorage @Inject constructor(
         return _userFlow.asStateFlow()
     }
     
-    /**
-     * Clear user data from encrypted storage
-     */
+
     suspend fun clearUser() = withContext(Dispatchers.IO) {
         clearAllData()
     }
     
-    /**
-     * Clear all data from encrypted storage.
-     * Called when Keystore is invalidated or data is corrupted.
-     * This forces a logout so user can start fresh.
-     */
+
     private fun clearAllData() {
         try {
             encryptedPrefs.edit().clear().apply()
