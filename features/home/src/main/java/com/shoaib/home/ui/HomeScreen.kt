@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.CardGiftcard
 import androidx.compose.material.icons.outlined.CreditCard
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.VerifiedUser
 import androidx.compose.material.icons.outlined.WifiTethering
 import androidx.compose.material3.Icon
@@ -43,18 +44,18 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
 fun HomeScreen(
-    items: List<DashboardItem> = defaultDashboardItems(),
     modifier: Modifier = Modifier,
+
+    items: List<DashboardItem> = defaultDashboardItems(),
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val user by viewModel.user.collectAsStateWithLifecycle()
     
     // Extract display name in UI layer
-    val displayName = if (user != null && user!!.name.isNotBlank()) {
-        "Hi, ${user!!.name}"
-    } else {
-        "Hi, there"
-    }
+    val displayName = user?.name
+        ?.takeIf { it.isNotBlank() }
+        ?.let { "Hi, $it" }
+        ?: "Hi, there"
 
     GlassScaffold(
         modifier = modifier,
@@ -158,6 +159,11 @@ private fun DashboardCard(item: DashboardItem) {
 
 @Composable
 private fun defaultDashboardItems(): List<DashboardItem> = listOf(
+    DashboardItem(
+        title = "Profile",
+        icon = Icons.Outlined.Person,
+        tint = Color(0xFF60A5FA) // Light blue
+    ),
     DashboardItem(
         title = "Banking Services",
         icon = Icons.Outlined.AccountBalance,
