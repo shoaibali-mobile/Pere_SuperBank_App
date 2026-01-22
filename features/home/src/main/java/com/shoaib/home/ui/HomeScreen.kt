@@ -45,8 +45,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-
-    items: List<DashboardItem> = defaultDashboardItems(),
+    onCardsClick: () -> Unit = {},
+    items: List<DashboardItem> = defaultDashboardItems(onCardsClick),
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val user by viewModel.user.collectAsStateWithLifecycle()
@@ -158,7 +158,7 @@ private fun DashboardCard(item: DashboardItem) {
 }
 
 @Composable
-private fun defaultDashboardItems(): List<DashboardItem> = listOf(
+private fun defaultDashboardItems(onCardsClick: () -> Unit): List<DashboardItem> = listOf(
     DashboardItem(
         title = "Profile",
         icon = Icons.Outlined.Person,
@@ -172,7 +172,8 @@ private fun defaultDashboardItems(): List<DashboardItem> = listOf(
     DashboardItem(
         title = "Cards & Payments",
         icon = Icons.Outlined.CreditCard,
-        tint = Color(0xFFA855F7) // Purple
+        tint = Color(0xFFA855F7), // Purple
+        onClick = onCardsClick
     ),
     DashboardItem(
         title = "Rewards & Shopping",

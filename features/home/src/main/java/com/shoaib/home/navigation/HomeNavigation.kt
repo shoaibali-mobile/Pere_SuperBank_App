@@ -7,8 +7,10 @@ import com.shoaib.navigation.HomeRoute
 
 
 
-fun NavGraphBuilder.homeGraph(){
+fun NavGraphBuilder.homeGraph(
+    onCardsClick: () -> Unit
+){
     composable<HomeRoute> {
-        HomeScreen()
+        HomeScreen(onCardsClick = onCardsClick)
     }
 }

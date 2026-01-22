@@ -32,40 +32,40 @@ fun PinScreen(
     }
 
     GlassScaffold { innerPadding ->
-        Column(
+    Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            when (val state = uiState) {
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        when (val state = uiState) {
                 is PinUiState.Loading -> CircularProgressIndicator(color = Color.White)
-                is PinUiState.Content -> {
-                    Text(
-                        text = if (state.mode == PinMode.Setup) "Create a PIN" else "Enter PIN",
+            is PinUiState.Content -> {
+                Text(
+                    text = if (state.mode == PinMode.Setup) "Create a PIN" else "Enter PIN",
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = SuperAppDesign.TextPrimary
-                    )
+                )
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                    PinIndicator(length = 4, filledCount = state.enteredPin.length)
+                PinIndicator(length = 4, filledCount = state.enteredPin.length)
 
-                    if (state.error != null) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                if (state.error != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
                         Text(text = state.error, color = Color(0xFFEF4444))
-                    }
-
-                    Spacer(modifier = Modifier.height(48.dp))
-
-                    PinKeypad(
-                        onDigitClick = { viewModel.onDigitEntered(it) },
-                        onBackspaceClick = { viewModel.onBackspace() }
-                    )
                 }
+
+                Spacer(modifier = Modifier.height(48.dp))
+
+                PinKeypad(
+                    onDigitClick = { viewModel.onDigitEntered(it) },
+                    onBackspaceClick = { viewModel.onBackspace() }
+                )
+            }
                 is PinUiState.Success -> { }
             }
         }

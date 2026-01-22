@@ -27,7 +27,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             authRepository.getCurrentUser().collect { authUser ->
                 _user.value = authUser
-            }
+           }
         }
     }
 }

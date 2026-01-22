@@ -19,6 +19,7 @@ sealed interface AuthRoute {
 
     @Serializable
     object Pin : AuthRoute
+
 }
 
 @Serializable
@@ -26,3 +27,6 @@ object HomeRoute
 
 @Serializable
 object ProfileRoute
+
+@Serializable
+object CardsRoute

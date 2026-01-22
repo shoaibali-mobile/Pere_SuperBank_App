@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -16,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shoaib.auth.navigation.authGraph
+import com.shoaib.cards.navigation.cardsGraph
 import com.shoaib.home.navigation.homeGraph
-import com.shoaib.home.ui.HomeScreen
+import com.shoaib.navigation.CardsRoute
 import com.shoaib.navigation.HomeRoute
 import com.shoaib.pere_super_app_bank.ui.theme.PereSuperAppBankTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,7 +70,13 @@ fun AppNavigation() {
             }
         )
 
-        homeGraph()
+        cardsGraph(
+            onBack = { navController.popBackStack() }
+        )
+
+        homeGraph(
+            onCardsClick = { navController.navigate(CardsRoute) }
+        )
     }
 }
 

@@ -18,6 +18,7 @@ lifecycleViewmodelCompose = "2.7.0"
 javapoet = "1.13.0"
 navigationCompose = "2.8.5"
 kotlinxSerialization = "1.7.3"
+runtime = "1.10.1"
 
 
 [libraries]
@@ -48,6 +49,7 @@ androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "l
 javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 
 [plugins]

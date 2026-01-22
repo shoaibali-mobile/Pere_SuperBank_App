@@ -75,11 +75,13 @@ dependencies {
     implementation(project(":features:profile"))
     implementation(project(":features:auth"))
     implementation(project(":features:home"))
+    implementation(project(":features:cards"))
     
     // ===== CORE MODULES =====
     implementation(project(":core:auth:api"))
     implementation(project(":core:auth:impl"))
     implementation(project(":core:navigation"))
+
     
     // ===== TESTING =====
     testImplementation(libs.junit)
