@@ -30,3 +30,6 @@ object ProfileRoute
 
 @Serializable
 object CardsRoute
+
+@Serializable
+object  CreditCardRoute

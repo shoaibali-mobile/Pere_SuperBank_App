@@ -33,11 +33,5 @@ fun NavigationHeader(
     )
     
     Spacer(Modifier.height(12.dp))
-    
-    Text(
-        text = "Cards",
-        fontSize = 36.sp,
-        fontWeight = FontWeight.Bold,
-        color = SuperAppDesign.TextPrimary
-    )
+
 }

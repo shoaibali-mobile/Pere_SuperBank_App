@@ -1,7 +1,6 @@
 package com.shoaib.cards.ui
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -23,7 +22,7 @@ import com.shoaib.design.components.GlassScaffold
 fun CardsScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
-    onCardTypeClick: (CardType) -> Unit = {}
+    onCardTypeClick: (CardType) -> Unit = {},
 ) {
     GlassScaffold(
         modifier = modifier,
