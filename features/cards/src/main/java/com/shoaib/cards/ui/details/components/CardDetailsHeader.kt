@@ -1,4 +1,4 @@
-package com.shoaib.cards.ui.credit.components
+package com.shoaib.cards.ui.details.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,18 +20,20 @@ import androidx.compose.ui.unit.sp
 import com.shoaib.design.theme.SuperAppDesign
 
 /**
- * Credit Cards Header Section
+ * Card Details Header Section
  * Displays title, subtitle, and card count badge
  */
 @Composable
-fun CreditCardsHeader(
+fun CardDetailsHeader(
     modifier: Modifier = Modifier,
+    title: String = "Credit Cards",
+    subtitle: String = "Your Credit Cards",
     cardCount: Int = 1
 ) {
     Column(modifier = modifier) {
         // Main Title
         Text(
-            text = "Credit Cards",
+            text = title,
             fontSize = 34.sp,
             fontWeight = FontWeight.ExtraBold,
             color = SuperAppDesign.TextPrimary,
@@ -43,7 +45,7 @@ fun CreditCardsHeader(
         // Subtitle and Badge Row
         Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
             Text(
-                text = "Your Credit Cards",
+                text = subtitle,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = SuperAppDesign.TextPrimary

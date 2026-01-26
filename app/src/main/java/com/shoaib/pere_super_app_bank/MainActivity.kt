@@ -20,7 +20,7 @@ import com.shoaib.auth.navigation.authGraph
 import com.shoaib.cards.navigation.cardsGraph
 import com.shoaib.home.navigation.homeGraph
 import com.shoaib.navigation.CardsRoute
-import com.shoaib.navigation.CreditCardRoute
+import com.shoaib.navigation.CardDetailsRoute
 import com.shoaib.navigation.HomeRoute
 import com.shoaib.pere_super_app_bank.ui.theme.PereSuperAppBankTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -77,8 +77,8 @@ fun AppNavigation() {
                     popUpTo(HomeRoute) { inclusive = false }
                 }
             },
-            onOpenCreditCard = {
-                navController.navigate(CreditCardRoute)
+            onOpenCardDetails = { cardTypeStr ->
+                navController.navigate(CardDetailsRoute(cardType = cardTypeStr))
             }
         )
 

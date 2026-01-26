@@ -1,4 +1,4 @@
-package com.shoaib.cards.ui.credit.components
+package com.shoaib.cards.ui.details.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

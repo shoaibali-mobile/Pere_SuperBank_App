@@ -32,4 +32,4 @@ object ProfileRoute
 object CardsRoute
 
 @Serializable
-object  CreditCardRoute
+data class CardDetailsRoute(val cardType: String)

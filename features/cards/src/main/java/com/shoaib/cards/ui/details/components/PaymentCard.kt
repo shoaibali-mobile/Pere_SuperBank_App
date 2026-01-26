@@ -1,5 +1,7 @@
-package com.shoaib.cards.ui.credit.components
+package com.shoaib.cards.ui.details.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,11 +10,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -30,37 +32,91 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shoaib.cards.R
+import com.shoaib.cards.model.CardFace
+import com.shoaib.cards.model.CardType
 import com.shoaib.design.theme.SuperAppDesign
 
 /**
- * Premium Credit Card Component with Metallic Finish
+ * Premium Payment Card Component with 3D Flip Animation
  */
 @Composable
-fun CreditCard(
+fun PaymentCard(
+    cardFace: CardFace,
     modifier: Modifier = Modifier,
+    cardType: CardType = CardType.CreditCards,
     cardNumber: String = "9012 3456 7890 1234",
     expiryDate: String = "12/26",
-    cardholderName: String = "JOHN DOE",
-    onCardNumberToggle: () -> Unit = {}
+    cardholderName: String = "Bruce Wayne",
+    cvv: String = "123"
 ) {
-    var isCardNumberVisible by remember { mutableStateOf(false) }
-    
+    val rotation by animateFloatAsState(
+        targetValue = if (cardFace == CardFace.Front) 0f else 180f,
+        animationSpec = tween(durationMillis = 600)
+    )
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(220.dp)
+            .graphicsLayer {
+                rotationY = rotation
+                cameraDistance = 12f * density
+            }
+    ) {
+        if (rotation <= 90f) {
+            PaymentCardFront(
+                cardNumber = cardNumber,
+                expiryDate = expiryDate,
+                cardholderName = cardholderName,
+                cardType = cardType
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        rotationY = 180f
+                    }
+            ) {
+                PaymentCardBack(
+                    cvv = cvv,
+                    cardholderName = cardholderName,
+                    cardType = cardType,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PaymentCardFront(
+    cardNumber: String,
+    expiryDate: String,
+    cardholderName: String,
+    cardType: CardType
+) {
+    var isCardNumberVisible by remember { mutableStateOf(false) }
+    
+    val gradientColors = when (cardType) {
+        CardType.DebitCards -> listOf(Color(0xFF8E2E2E), Color(0xFF4A0E0E)) // Maroon/Red for Debit
+        CardType.VirtualCards -> listOf(Color(0xFF323232), Color(0xFF000000)) // Blackish for Virtual
+        else -> listOf(Color(0xFF2A5298), Color(0xFF1E3C72)) // Blue for Credit
+    }
+    
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
             .clip(RoundedCornerShape(16.dp))
             .background(
                 brush = Brush.radialGradient(
-                    colors = listOf(
-                        Color(0xFF2A5298), // Lighter steel blue (center)
-                        Color(0xFF1E3C72)  // Deep metallic blue (edges)
-                    ),
+                    colors = gradientColors,
                     center = Offset(0.3f, 0.3f)
                 )
             )
@@ -75,21 +131,18 @@ fun CreditCard(
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
-            // Top Row: Chip and RuPay Logo
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // EMV Chip
                 Image(
                     painter = painterResource(id = R.drawable.chip),
                     contentDescription = "EMV Chip",
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(56.dp)
                 )
                 
                 Spacer(Modifier.weight(1f))
                 
-                // RuPay Logo with holographic glow
                 Image(
                     painter = painterResource(id = R.drawable.rupay),
                     contentDescription = "RuPay Logo",
@@ -99,7 +152,6 @@ fun CreditCard(
             
             Spacer(Modifier.height(24.dp))
             
-            // Card Number with Eye Icon
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -109,6 +161,7 @@ fun CreditCard(
                     text = if (isCardNumberVisible) cardNumber else maskedNumber,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace,
                     color = SuperAppDesign.TextPrimary,
                     letterSpacing = 2.sp,
                     modifier = Modifier.weight(1f)
@@ -126,7 +179,6 @@ fun CreditCard(
             
             Spacer(Modifier.height(20.dp))
             
-            // Bottom Row: Expiry and Name
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Bottom
