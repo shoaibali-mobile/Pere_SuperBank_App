@@ -72,7 +72,8 @@ internal fun AuthUser.toUserData(): UserData {
         phoneNumber = phoneNumber,
         isEmailVerified = isEmailVerified,
         isPhoneVerified = isPhoneVerified,
-        accountStatus = accountStatus.name,
+        // Safety: Handle backend sending null for accountStatus
+        accountStatus = try { accountStatus.name } catch (e: Exception) { AccountStatus.ACTIVE.name },
         profileImageUrl = profileImageUrl,
         createdAt = createdAt,
         lastLoginAt = lastLoginAt,

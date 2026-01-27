@@ -48,6 +48,11 @@ dependencies {
     // API module (interfaces)
     implementation(project(":core:auth:api"))
 
+    // Network
+    implementation(project(":core:network"))
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
     // Foundation
     implementation(project(":foundation:utils"))
 

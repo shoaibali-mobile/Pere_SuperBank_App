@@ -14,7 +14,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "http://localhost:8080/"
+    // Use your computer's local IP to access the backend from a real device on the same Wi-Fi
+    private const val BASE_URL = "http://192.168.2.201:8080/"
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .build()
+    }
 
     @Provides
     @Singleton
@@ -25,4 +33,6 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
+
 }

@@ -19,7 +19,9 @@ class LoginViewModel @Inject constructor(
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     fun login(email: String, password: String) {
+        android.util.Log.d("LoginDebug", "ViewModel: Attempting login with email: $email")
         if (email.isBlank() || password.isBlank()) {
+            android.util.Log.e("LoginDebug", "ViewModel: Login failed - Empty credentials")
             _uiState.value = LoginUiState.Error("Email and password cannot be empty")
             return
         }
@@ -27,11 +29,14 @@ class LoginViewModel @Inject constructor(
         _uiState.value = LoginUiState.Loading
 
         viewModelScope.launch {
+            android.util.Log.d("LoginDebug", "ViewModel: Calling AuthRepository.login...")
             val result = authRepository.login(email, password)
             
             result.onSuccess { user ->
+                android.util.Log.d("LoginDebug", "ViewModel: Login SUCCESS! User: ${user.name}")
                 _uiState.value = LoginUiState.Success(user)
             }.onFailure { error ->
+                android.util.Log.e("LoginDebug", "ViewModel: Login FAILED! Error: ${error.message}", )
                 _uiState.value = LoginUiState.Error(error.message)
             }
         }
