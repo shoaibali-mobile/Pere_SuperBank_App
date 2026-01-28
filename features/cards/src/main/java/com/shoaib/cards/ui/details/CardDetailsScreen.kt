@@ -356,7 +356,10 @@ fun CardDetailsContent(
         ) {
             ManageCardBottomSheet(
                 onDismiss = { showBottomSheet = false },
-                onManageLimitsClick = { /* TODO: Handle manage limits */ },
+                onManageLimitsClick = { 
+                    showBottomSheet = false
+                    onManageCardClick() // Navigate to manage limits
+                },
                 onManageAutoPayClick = { /* TODO: Handle manage autopay */ },
                 onSetResetPinClick = { /* TODO: Handle set/reset PIN */ },
                 onSmartEmiClick = { /* TODO: Handle SmartEMI */ },

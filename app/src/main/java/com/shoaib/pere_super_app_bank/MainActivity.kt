@@ -24,6 +24,7 @@ import com.shoaib.navigation.CardDetailsRoute
 import com.shoaib.navigation.HomeRoute
 import com.shoaib.pere_super_app_bank.ui.theme.PereSuperAppBankTheme
 import dagger.hilt.android.AndroidEntryPoint
+import com.shoaib.navigation.ManageLimitsRoute
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -71,6 +72,8 @@ fun AppNavigation() {
             }
         )
 
+
+
         cardsGraph(
             onBack = {
                 navController.navigate(HomeRoute) {
@@ -79,6 +82,9 @@ fun AppNavigation() {
             },
             onOpenCardDetails = { cardId ->
                 navController.navigate(CardDetailsRoute(cardId = cardId))
+            },
+            onNavigateToManageLimits = { cardId ->
+                navController.navigate(ManageLimitsRoute(cardId = cardId))
             }
         )
 

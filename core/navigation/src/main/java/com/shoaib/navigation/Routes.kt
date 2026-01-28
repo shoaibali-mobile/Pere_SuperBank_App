@@ -33,3 +33,6 @@ object CardsRoute
 
 @Serializable
 data class CardDetailsRoute(val cardId: String)
+
+@Serializable
+data class ManageLimitsRoute(val cardId: String)

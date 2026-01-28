@@ -9,9 +9,13 @@ import com.shoaib.cards.ui.details.CardDetailsScreen
 import com.shoaib.navigation.CardsRoute
 import com.shoaib.navigation.CardDetailsRoute
 
+import com.shoaib.cards.ui.managelimits.ManageLimitsScreen
+import com.shoaib.navigation.ManageLimitsRoute
+
 fun NavGraphBuilder.cardsGraph(
     onBack: () -> Unit,
-    onOpenCardDetails: (String) -> Unit
+    onOpenCardDetails: (String) -> Unit,
+    onNavigateToManageLimits: (String) -> Unit
 ) {
     composable<CardsRoute> {
         CardsScreen(
@@ -32,6 +36,17 @@ fun NavGraphBuilder.cardsGraph(
         val route = backStackEntry.toRoute<CardDetailsRoute>()
         CardDetailsScreen(
             cardId = route.cardId,
+            onBackClick = onBack,
+            onManageCardClick = {
+                // Navigate to manage limits
+                onNavigateToManageLimits(route.cardId)
+            }
+        )
+    }
+    
+    composable<ManageLimitsRoute> { backStackEntry ->
+        val route = backStackEntry.toRoute<ManageLimitsRoute>()
+        ManageLimitsScreen(
             onBackClick = onBack
         )
     }
