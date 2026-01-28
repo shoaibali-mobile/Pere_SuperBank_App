@@ -43,6 +43,9 @@ import com.shoaib.cards.model.CardFace
 import com.shoaib.cards.model.CardType
 import com.shoaib.design.theme.SuperAppDesign
 
+import com.shoaib.cards.ui.theme.CardGradients
+import com.shoaib.cards.utils.CardUtils
+
 /**
  * Premium Payment Card Component with 3D Flip Animation
  */
@@ -54,7 +57,9 @@ fun PaymentCard(
     cardNumber: String = "9012 3456 7890 1234",
     expiryDate: String = "12/26",
     cardholderName: String = "Bruce Wayne",
-    cvv: String = "123"
+    cvv: String = "123",
+    cardNetwork: String = "RUPAY",
+    cardIndex: Int = 0 // Add cardIndex parameter
 ) {
     val rotation by animateFloatAsState(
         targetValue = if (cardFace == CardFace.Front) 0f else 180f,
@@ -75,7 +80,9 @@ fun PaymentCard(
                 cardNumber = cardNumber,
                 expiryDate = expiryDate,
                 cardholderName = cardholderName,
-                cardType = cardType
+                cardType = cardType,
+                cardNetwork = cardNetwork,
+                cardIndex = cardIndex
             )
         } else {
             Box(
@@ -89,6 +96,8 @@ fun PaymentCard(
                     cvv = cvv,
                     cardholderName = cardholderName,
                     cardType = cardType,
+                    cardIndex = cardIndex,
+                    cardNetwork = cardNetwork // Pass cardNetwork to back
                 )
             }
         }
@@ -100,24 +109,26 @@ private fun PaymentCardFront(
     cardNumber: String,
     expiryDate: String,
     cardholderName: String,
-    cardType: CardType
+    cardType: CardType,
+    cardNetwork: String,
+    cardIndex: Int
 ) {
     var isCardNumberVisible by remember { mutableStateOf(false) }
     
-    val gradientColors = when (cardType) {
-        CardType.DebitCards -> listOf(Color(0xFF8E2E2E), Color(0xFF4A0E0E)) // Maroon/Red for Debit
-        CardType.VirtualCards -> listOf(Color(0xFF323232), Color(0xFF000000)) // Blackish for Virtual
-        else -> listOf(Color(0xFF2A5298), Color(0xFF1E3C72)) // Blue for Credit
-    }
+    // Use the Bruce Wayne persona gradients based on index
+    val gradientColors = CardGradients.getGradient(cardIndex)
+    
+    val logoRes = CardUtils.getCardLogo(cardNetwork)
     
     Box(
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(16.dp))
             .background(
-                brush = Brush.radialGradient(
+                brush = Brush.linearGradient( // Changed to linear for sleeker look
                     colors = gradientColors,
-                    center = Offset(0.3f, 0.3f)
+                    start = Offset(0f, 0f),
+                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
                 )
             )
             .border(
@@ -144,8 +155,8 @@ private fun PaymentCardFront(
                 Spacer(Modifier.weight(1f))
                 
                 Image(
-                    painter = painterResource(id = R.drawable.rupay),
-                    contentDescription = "RuPay Logo",
+                    painter = painterResource(id = logoRes),
+                    contentDescription = "$cardNetwork Logo",
                     modifier = Modifier.size(48.dp)
                 )
             }

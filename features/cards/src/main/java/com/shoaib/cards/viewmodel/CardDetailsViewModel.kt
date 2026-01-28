@@ -22,11 +22,12 @@ class CardDetailsViewModel @Inject constructor(
     // The key matches the parameter name in the route data class
     private val cardId: String = checkNotNull(savedStateHandle["cardId"])
 
-    // Observe the card from repository cache by ID
-    val uiState: StateFlow<CardDetailsUiState> = repository.getCardById(cardId)
-        .map { card ->
-            if (card != null) {
-                CardDetailsUiState.Success(card)
+    // Observe all cards to support swiping
+    val uiState: StateFlow<CardDetailsUiState> = repository.getCardsStream()
+        .map { cards ->
+            val index = cards.indexOfFirst { it.id == cardId }
+            if (index != -1) {
+                CardDetailsUiState.Success(cards, index)
             } else {
                 CardDetailsUiState.Error("Card not found")
             }

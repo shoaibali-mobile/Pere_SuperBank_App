@@ -21,13 +21,14 @@ import com.shoaib.design.theme.SuperAppDesign
  */
 @Composable
 fun NavigationHeader(
+    modifier: Modifier = Modifier,
     onBackClick: () -> Unit
 ) {
     Icon(
         imageVector = Icons.Default.ArrowBack,
         contentDescription = "Back",
         tint = SuperAppDesign.TextPrimary,
-        modifier = Modifier
+        modifier = modifier
             .size(24.dp)
             .clickable(onClick = onBackClick)
     )

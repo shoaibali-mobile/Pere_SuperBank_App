@@ -40,8 +40,7 @@ fun SuperLoading(
 
     Box(
         modifier = modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.7f)), // Fade/Dim background
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(

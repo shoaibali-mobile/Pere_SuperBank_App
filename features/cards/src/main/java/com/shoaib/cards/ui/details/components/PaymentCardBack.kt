@@ -28,14 +28,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shoaib.cards.R
 import com.shoaib.cards.model.CardType
-import com.shoaib.design.theme.SuperAppDesign
+import com.shoaib.cards.ui.theme.CardGradients
+import com.shoaib.cards.utils.CardUtils
 
 /**
  * Premium Payment Card Back Side
@@ -45,13 +45,14 @@ fun PaymentCardBack(
     modifier: Modifier = Modifier,
     cvv: String = "123",
     cardholderName: String = "Bruce Wayne",
-    cardType: CardType = CardType.CreditCards
+    cardType: CardType = CardType.CreditCards,
+    cardIndex: Int = 0,
+    cardNetwork: String = "RUPAY"
 ) {
-    val gradientColors = when (cardType) {
-        CardType.DebitCards -> listOf(Color(0xFF8E2E2E), Color(0xFF4A0E0E)) // Maroon/Red for Debit
-        CardType.VirtualCards -> listOf(Color(0xFF323232), Color(0xFF000000)) // Blackish for Virtual
-        else -> listOf(Color(0xFF2A5298), Color(0xFF1E3C72)) // Blue for Credit
-    }
+    // Use the same Bruce Wayne gradients for the back
+    val gradientColors = CardGradients.getGradient(cardIndex)
+    
+    val logoRes = CardUtils.getCardLogo(cardNetwork)
 
     Box(
         modifier = modifier
@@ -59,9 +60,10 @@ fun PaymentCardBack(
             .height(220.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(
-                brush = Brush.radialGradient(
+                brush = Brush.linearGradient(
                     colors = gradientColors,
-                    center = Offset(0.3f, 0.3f)
+                    start = Offset(0f, 0f),
+                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
                 )
             )
             .border(
@@ -102,7 +104,7 @@ fun PaymentCardBack(
                     Text(
                         text = cardholderName,
                         modifier = Modifier.padding(start = 12.dp),
-                        fontSize = 10.sp,
+                        fontSize = 8.sp,
                         fontFamily = FontFamily(Font(R.font.rockybilly)),
                         color = Color.Black
                     )
@@ -125,10 +127,10 @@ fun PaymentCardBack(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // RuPay Logo
+                // Card Network Logo
                 Image(
-                    painter = painterResource(id = R.drawable.rupay),
-                    contentDescription = "RuPay Logo",
+                    painter = painterResource(id = logoRes),
+                    contentDescription = "$cardNetwork Logo",
                     modifier = Modifier.size(48.dp)
                 )
             }
