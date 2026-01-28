@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -66,4 +67,19 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
     implementation(project(":core:navigation"))
+
+
+    // 1. Network & Serialization
+    implementation(project(":core:network"))
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.kotlinx.serialization.json)
+
+    // 2. Auth API (To get the Access Token)
+    implementation(project(":core:auth:api"))
+
+    // 3. Hilt (For Dependency Injection)
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
 }

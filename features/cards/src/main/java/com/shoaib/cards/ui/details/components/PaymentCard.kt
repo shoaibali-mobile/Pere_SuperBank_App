@@ -156,15 +156,28 @@ private fun PaymentCardFront(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val maskedNumber = cardNumber.replaceRange(0, cardNumber.length - 4, "**** **** **** ")
+                // Format raw number into groups of 4: "1234 5678 9012 3456"
+                val formattedNumber = cardNumber.chunked(4).joinToString(" ")
+                
+                // Create masked version based on the formatted number: "**** **** **** 3456"
+                val maskedNumber = if (formattedNumber.length >= 4) {
+                    val lastFour = formattedNumber.takeLast(4)
+                    val maskPrefix = formattedNumber.dropLast(4).replace(Regex("[0-9]"), "*")
+                    maskPrefix + lastFour
+                } else {
+                    "**** **** **** ****"
+                }
+
                 Text(
-                    text = if (isCardNumberVisible) cardNumber else maskedNumber,
+                    text = if (isCardNumberVisible) formattedNumber else maskedNumber,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Monospace,
                     color = SuperAppDesign.TextPrimary,
                     letterSpacing = 2.sp,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    softWrap = false
                 )
                 
                 Icon(

@@ -77,8 +77,8 @@ fun AppNavigation() {
                     popUpTo(HomeRoute) { inclusive = false }
                 }
             },
-            onOpenCardDetails = { cardTypeStr ->
-                navController.navigate(CardDetailsRoute(cardType = cardTypeStr))
+            onOpenCardDetails = { cardId ->
+                navController.navigate(CardDetailsRoute(cardId = cardId))
             }
         )
 

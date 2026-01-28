@@ -1,10 +1,10 @@
 package com.shoaib.auth.navigation
 
+import LoginScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.shoaib.auth.ui.login.LoginScreen
 import com.shoaib.auth.ui.login.LoginViewModel
 import com.shoaib.auth.ui.register.RegisterScreen
 import com.shoaib.auth.ui.pin.PinScreen

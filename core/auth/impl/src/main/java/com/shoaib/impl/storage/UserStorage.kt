@@ -31,21 +31,34 @@ class UserStorage @Inject constructor(
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()
     
-    // Create EncryptedSharedPreferences using the MasterKey
-    private val encryptedPrefs: SharedPreferences = EncryptedSharedPreferences.create(
-        context,
-        "encrypted_auth_user",
-        masterKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
-    
     private val json = Json { ignoreUnknownKeys = true }
     private val _userFlow = MutableStateFlow<AuthUser?>(null)
-    
+
+    // Create EncryptedSharedPreferences using the MasterKey
+    private var encryptedPrefs: SharedPreferences
+
     init {
+        encryptedPrefs = try {
+            createEncryptedPrefs()
+        } catch (e: Exception) {
+            // 🚨 Fix for AEADBadTagException / corrupted keys
+            // If we can't open it, delete the file and start fresh.
+            context.deleteSharedPreferences("encrypted_auth_user")
+            createEncryptedPrefs()
+        }
+        
         // Load user on initialization
         loadUser()
+    }
+
+    private fun createEncryptedPrefs(): SharedPreferences {
+        return EncryptedSharedPreferences.create(
+            context,
+            "encrypted_auth_user",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
     }
     
     private fun loadUser() {

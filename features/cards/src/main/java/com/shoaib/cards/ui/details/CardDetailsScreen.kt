@@ -23,6 +23,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,31 +37,52 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.shoaib.cards.model.CardFace
 import com.shoaib.cards.model.CardType
+import com.shoaib.cards.model.CreditCardDto
 import com.shoaib.cards.ui.components.NavigationHeader
 import com.shoaib.cards.ui.details.components.PaymentCard
 import com.shoaib.cards.ui.details.components.CardDetailsHeader
 import com.shoaib.cards.ui.details.components.ManageCardBottomSheet
 import com.shoaib.cards.ui.details.components.ManageCardButton
 import com.shoaib.cards.ui.details.components.RewardsPointsSection
+import com.shoaib.cards.viewmodel.CardDetailsUiState
+import com.shoaib.cards.viewmodel.CardDetailsViewModel
 import com.shoaib.design.components.GlassScaffold
+import com.shoaib.design.components.SuperLoading
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardDetailsScreen(
     modifier: Modifier = Modifier,
-    cardTypeStr: String = "CREDIT",
+    cardId: String,
     onBackClick: () -> Unit = {},
     onManageCardClick: () -> Unit = {},
     onRedeemClick: () -> Unit = {}
 ) {
-    val cardType = when (cardTypeStr) {
-        "DEBIT" -> CardType.DebitCards
-        "VIRTUAL" -> CardType.VirtualCards
-        else -> CardType.CreditCards
-    }
+    val viewModel: CardDetailsViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
 
+    CardDetailsContent(
+        modifier = modifier,
+        uiState = uiState,
+        onBackClick = onBackClick,
+        onManageCardClick = onManageCardClick,
+        onRedeemClick = onRedeemClick
+    )
+}
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CardDetailsContent(
+    modifier: Modifier = Modifier,
+    uiState: CardDetailsUiState,
+    onBackClick: () -> Unit = {},
+    onManageCardClick: () -> Unit = {},
+    onRedeemClick: () -> Unit = {}
+) {
     // State to control card flip
     var cardFace by remember { mutableStateOf(CardFace.Front) }
     
@@ -75,110 +97,152 @@ fun CardDetailsScreen(
     GlassScaffold(
         modifier = modifier,
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 16.dp)
-        ) {
-            // Navigation Header with Back Button
-            NavigationHeader(
-                onBackClick = onBackClick
-            )
-
-            Spacer(Modifier.height(24.dp))
-
-            // Card Details Header (Title, Subtitle, Badge)
-            val headerTitle = when (cardType) {
-                CardType.DebitCards -> "Debit Cards"
-                CardType.VirtualCards -> "Virtual Cards"
-                else -> "Credit Cards"
+        when (uiState) {
+            is CardDetailsUiState.Loading -> {
+                SuperLoading(
+                    message = "Fetching card details...",
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
-            val headerSubtitle = when (cardType) {
-                CardType.DebitCards -> "Your Debit Cards"
-                CardType.VirtualCards -> "Your Virtual Cards"
-                else -> "Your Credit Cards"
-            }
-            
-            CardDetailsHeader(
-                title = headerTitle,
-                subtitle = headerSubtitle,
-                cardCount = 1
-            )
-
-            Spacer(Modifier.height(32.dp))
-
-            // Premium Payment Card Component with 3D Flip
-            PaymentCard(
-                cardFace = cardFace,
-                cardType = cardType,
-                cardNumber = "9012 3456 7890 1234"
-            )
-
-            Spacer(Modifier.height(24.dp))
-
-            // Manage Card Button - Show bottom sheet on click
-            ManageCardButton(
-                onClick = { showBottomSheet = true }
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            // Rewards Points Section
-            RewardsPointsSection(
-                points = 1250,
-                onRedeemClick = onRedeemClick
-            )
-            
-            Spacer(Modifier.height(32.dp))
-            
-            // Flip Card Button
-            Button(
-                onClick = { 
-                    cardFace = if (cardFace == CardFace.Front) CardFace.Back else CardFace.Front 
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .clip(RoundedCornerShape(28.dp)),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                ),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues()
-            ) {
+            is CardDetailsUiState.Error -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(
-                            brush = Brush.linearGradient(
-                                colors = listOf(
-                                    Color(0xFFFF9966), // Orange
-                                    Color(0xFFFF5E62)  // Coral
-                                )
-                            )
-                        ),
+                        .padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = Color.White
-                        )
-                        Spacer(Modifier.size(8.dp))
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "Flip Card",
-                            fontSize = 16.sp,
+                            text = "Error loading card",
+                            color = Color.Red,
                             fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = uiState.message,
                             color = Color.White
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = onBackClick) {
+                            Text("Go Back")
+                        }
                     }
                 }
             }
-            
-            Spacer(Modifier.height(24.dp))
+            is CardDetailsUiState.Success -> {
+                val card = uiState.card
+                val cardType = when (card.cardType.uppercase()) {
+                    "DEBIT" -> CardType.DebitCards
+                    "VIRTUAL" -> CardType.VirtualCards
+                    else -> CardType.CreditCards
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 20.dp, vertical = 16.dp)
+                ) {
+                    // Navigation Header with Back Button
+                    NavigationHeader(
+                        onBackClick = onBackClick
+                    )
+
+                    Spacer(Modifier.height(24.dp))
+
+                    // Card Details Header (Title, Subtitle, Badge)
+                    val headerTitle = when (cardType) {
+                        CardType.DebitCards -> "Debit Card"
+                        CardType.VirtualCards -> "Virtual Card"
+                        else -> "Credit Card"
+                    }
+                    val headerSubtitle = card.cardHolderName
+                    
+                    CardDetailsHeader(
+                        title = headerTitle,
+                        subtitle = headerSubtitle,
+                        cardCount = 1
+                    )
+
+                    Spacer(Modifier.height(32.dp))
+
+                    // Premium Payment Card Component with 3D Flip
+                    PaymentCard(
+                        cardFace = cardFace,
+                        cardType = cardType,
+                        cardNumber = card.cardNumber,
+                        cardholderName = card.cardHolderName,
+                        expiryDate = "${card.expiryMonth}/${card.expiryYear.toString().takeLast(2)}",
+                        cvv = card.cvv
+                    )
+
+                    Spacer(Modifier.height(24.dp))
+
+                    // Manage Card Button - Show bottom sheet on click
+                    ManageCardButton(
+                        onClick = { showBottomSheet = true }
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    // Rewards Points Section
+                    RewardsPointsSection(
+                        points = card.rewardsPoints,
+                        onRedeemClick = onRedeemClick
+                    )
+                    
+                    Spacer(Modifier.height(32.dp))
+                    
+                    // Flip Card Button
+                    Button(
+                        onClick = { 
+                            cardFace = if (cardFace == CardFace.Front) CardFace.Back else CardFace.Front 
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .clip(RoundedCornerShape(28.dp)),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent
+                        ),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    brush = Brush.linearGradient(
+                                        colors = listOf(
+                                            Color(0xFFFF9966), // Orange
+                                            Color(0xFFFF5E62)  // Coral
+                                        )
+                                    )
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Refresh,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = Color.White
+                                )
+                                Spacer(Modifier.size(8.dp))
+                                Text(
+                                    text = "Flip Card",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
+                    
+                    Spacer(Modifier.height(24.dp))
+                }
+            }
         }
     }
 
@@ -212,5 +276,18 @@ fun CardDetailsScreen(
 )
 @Composable
 private fun CardDetailsScreenPreview() {
-    CardDetailsScreen()
+    val fakeCard = CreditCardDto(
+        id = "123",
+        cardNumber = "4532123456789012",
+        cardType = "VISA",
+        cardHolderName = "John Doe",
+        cvv = "123",
+        expiryMonth = 12,
+        expiryYear = 2026,
+        rewardsPoints = 1250
+    )
+    
+    CardDetailsContent(
+        uiState = CardDetailsUiState.Success(fakeCard)
+    )
 }

@@ -54,21 +54,35 @@ class TokenStorage @Inject constructor(
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()
     
-    // Create EncryptedSharedPreferences using the MasterKey
-    private val encryptedPrefs: SharedPreferences = EncryptedSharedPreferences.create(
-        context,
-        "encrypted_auth_tokens",
-        masterKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
-    
-    // StateFlow for reactive updates
+    // StateFlow for reactive updates - MUST BE DEFINED BEFORE INIT BLOCK
     private val _tokensFlow = MutableStateFlow<AuthTokens?>(null)
-    
+
+    // Create EncryptedSharedPreferences using the MasterKey
+    private var encryptedPrefs: SharedPreferences
+
     init {
+        encryptedPrefs = try {
+            createEncryptedPrefs()
+        } catch (e: Exception) {
+            // 🚨 CRITICAL FIX: If decryption fails (BadTagException), 
+            // the key or data is corrupted. We MUST delete the corrupted file 
+            // and start fresh, otherwise the app will crash forever on launch.
+            context.deleteSharedPreferences("encrypted_auth_tokens")
+            createEncryptedPrefs()
+        }
+        
         // Load tokens on initialization
         loadTokens()
+    }
+
+    private fun createEncryptedPrefs(): SharedPreferences {
+        return EncryptedSharedPreferences.create(
+            context,
+            "encrypted_auth_tokens",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
     }
     
     private fun loadTokens() {

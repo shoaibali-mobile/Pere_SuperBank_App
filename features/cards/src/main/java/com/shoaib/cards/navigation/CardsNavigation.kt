@@ -20,6 +20,10 @@ fun NavGraphBuilder.cardsGraph(
                 if (type == CardType.CreditCards) onOpenCardDetails("CREDIT")
                 if (type == CardType.DebitCards) onOpenCardDetails("DEBIT")
                 if (type == CardType.VirtualCards) onOpenCardDetails("VIRTUAL")
+            },
+            onCardClick = { cardId ->
+                // Navigate to card details screen with the card ID
+                onOpenCardDetails(cardId)
             }
         )
     }
@@ -27,7 +31,7 @@ fun NavGraphBuilder.cardsGraph(
     composable<CardDetailsRoute> { backStackEntry ->
         val route = backStackEntry.toRoute<CardDetailsRoute>()
         CardDetailsScreen(
-            cardTypeStr = route.cardType,
+            cardId = route.cardId,
             onBackClick = onBack
         )
     }
