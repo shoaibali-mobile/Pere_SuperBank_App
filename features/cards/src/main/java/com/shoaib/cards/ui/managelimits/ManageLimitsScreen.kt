@@ -1,5 +1,6 @@
 package com.shoaib.cards.ui.managelimits
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -38,8 +39,11 @@ import com.shoaib.design.components.GlassScaffold
 import com.shoaib.design.components.SuperLoading
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.res.painterResource
+import com.shoaib.cards.utils.CardUtils
 
 @Composable
 fun ManageLimitsScreen(
@@ -63,23 +67,36 @@ fun ManageLimitsScreen(
             NavigationHeader(onBackClick = onBackClick)
             
             Spacer(modifier = Modifier.height(24.dp))
-            
-            Text(
-                text = "Manage Limits",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
 
-            card?.let { c ->
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "${c.cardType}: ${c.cardNumber.maskCardNumber(4)}",
-                    color = Color.White.copy(alpha = 0.9f),
-                    fontSize = 14.sp
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Manage Limits",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    card?.let { c ->
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "${c.cardType}: ${c.cardNumber.maskCardNumber(4)}",
+                            color = Color.White.copy(alpha = 0.9f),
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+                card?.let { c ->
+                    Image(
+                        painter = painterResource(id = CardUtils.getCardLogo(c.cardType)),
+                        contentDescription = "${c.cardType} logo",
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
             }
-            
+
             Spacer(modifier = Modifier.height(24.dp))
 
             // Tab Selector

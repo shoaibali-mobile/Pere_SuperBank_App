@@ -1,10 +1,12 @@
 package com.shoaib.cards.ui.details
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -70,7 +72,8 @@ fun CardDetailsScreen(
     cardId: String,
     onBackClick: () -> Unit = {},
     onManageCardClick: () -> Unit = {},
-    onRedeemClick: () -> Unit = {}
+    onRedeemClick: () -> Unit = {},
+    onSetResetPinClick: () -> Unit = {}
 ) {
     val viewModel: CardDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -80,7 +83,8 @@ fun CardDetailsScreen(
         uiState = uiState,
         onBackClick = onBackClick,
         onManageCardClick = onManageCardClick,
-        onRedeemClick = onRedeemClick
+        onRedeemClick = onRedeemClick,
+        onSetResetPinClick = onSetResetPinClick
     )
 }
 
@@ -91,7 +95,8 @@ fun CardDetailsContent(
     uiState: CardDetailsUiState,
     onBackClick: () -> Unit = {},
     onManageCardClick: () -> Unit = {},
-    onRedeemClick: () -> Unit = {}
+    onRedeemClick: () -> Unit = {},
+    onSetResetPinClick: () -> Unit = {}
 ) {
     // State to control card flip
     var cardFace by remember { mutableStateOf(CardFace.Front) }
@@ -224,7 +229,7 @@ fun CardDetailsContent(
                         )
                         }
 
-                        // Swipe Hint Animation (Arrow)
+                        // Swipe Hint Animation (Arrow) - use top-level AnimatedVisibility (Box is not ColumnScope)
                         androidx.compose.animation.AnimatedVisibility(
                             visible = showSwipeHint,
                             enter = fadeIn(),
@@ -254,7 +259,7 @@ fun CardDetailsContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 16.dp),
-                            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+                            horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             repeat(cards.size) { iteration ->
@@ -307,7 +312,7 @@ fun CardDetailsContent(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent
                         ),
-                        contentPadding = androidx.compose.foundation.layout.PaddingValues()
+                        contentPadding = PaddingValues()
                     ) {
                         Box(
                             modifier = Modifier
@@ -356,12 +361,15 @@ fun CardDetailsContent(
         ) {
             ManageCardBottomSheet(
                 onDismiss = { showBottomSheet = false },
-                onManageLimitsClick = { 
+                onManageLimitsClick = {
                     showBottomSheet = false
-                    onManageCardClick() // Navigate to manage limits
+                    onManageCardClick()
                 },
                 onManageAutoPayClick = { /* TODO: Handle manage autopay */ },
-                onSetResetPinClick = { /* TODO: Handle set/reset PIN */ },
+                onSetResetPinClick = {
+                    showBottomSheet = false   // close sheet
+                    onSetResetPinClick()
+                },
                 onSmartEmiClick = { /* TODO: Handle SmartEMI */ },
                 onRequestAddOnCardClick = { /* TODO: Handle add-on card */ },
                 onUpgradeCardClick = { /* TODO: Handle upgrade card */ },
@@ -391,6 +399,11 @@ private fun CardDetailsScreenPreview() {
     )
     
     CardDetailsContent(
-        uiState = CardDetailsUiState.Success(listOf(fakeCard), 0)
+        modifier = Modifier,
+        uiState = CardDetailsUiState.Success(listOf(fakeCard), 0),
+        onBackClick = {},
+        onManageCardClick = {},
+        onRedeemClick = {},
+        onSetResetPinClick = {}
     )
 }

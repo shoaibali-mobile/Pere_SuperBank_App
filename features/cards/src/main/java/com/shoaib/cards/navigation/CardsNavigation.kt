@@ -10,12 +10,15 @@ import com.shoaib.navigation.CardsRoute
 import com.shoaib.navigation.CardDetailsRoute
 
 import com.shoaib.cards.ui.managelimits.ManageLimitsScreen
+import com.shoaib.cards.ui.resetCardPin.SetResetPinScreen
 import com.shoaib.navigation.ManageLimitsRoute
+import com.shoaib.navigation.SetResetPinRoute
 
 fun NavGraphBuilder.cardsGraph(
     onBack: () -> Unit,
     onOpenCardDetails: (String) -> Unit,
-    onNavigateToManageLimits: (String) -> Unit
+    onNavigateToManageLimits: (String) -> Unit,
+    onNavigateToSetResetPin: (String) -> Unit
 ) {
     composable<CardsRoute> {
         CardsScreen(
@@ -38,8 +41,10 @@ fun NavGraphBuilder.cardsGraph(
             cardId = route.cardId,
             onBackClick = onBack,
             onManageCardClick = {
-                // Navigate to manage limits
                 onNavigateToManageLimits(route.cardId)
+            },
+            onSetResetPinClick = {
+                onNavigateToSetResetPin(route.cardId)
             }
         )
     }
@@ -49,5 +54,9 @@ fun NavGraphBuilder.cardsGraph(
         ManageLimitsScreen(
             onBackClick = onBack
         )
+    }
+
+    composable<SetResetPinRoute> {
+        SetResetPinScreen(onBackClick = onBack)
     }
 }

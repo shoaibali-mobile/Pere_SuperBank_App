@@ -14,6 +14,16 @@ fun String.maskCardNumber(visibleLastDigits: Int = 4): String {
 }
 
 /**
+ * Masks a card number for PIN/settings: first 6 + ****** + last 4.
+ * Example: "6529251234567890".maskCardNumberForPin() -> "652925******7890"
+ */
+fun String.maskCardNumberForPin(): String {
+    val digits = this.filter { it.isDigit() }
+    if (digits.length < 11) return maskCardNumber(4)
+    return digits.take(6) + "******" + digits.takeLast(4)
+}
+
+/**
  * Utility functions for Card features
  */
 object CardUtils {

@@ -36,3 +36,6 @@ data class CardDetailsRoute(val cardId: String)
 
 @Serializable
 data class ManageLimitsRoute(val cardId: String)
+
+@Serializable
+data class SetResetPinRoute(val cardId: String)

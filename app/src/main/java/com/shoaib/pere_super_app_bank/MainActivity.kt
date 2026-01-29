@@ -25,6 +25,7 @@ import com.shoaib.navigation.HomeRoute
 import com.shoaib.pere_super_app_bank.ui.theme.PereSuperAppBankTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.shoaib.navigation.ManageLimitsRoute
+import com.shoaib.navigation.SetResetPinRoute
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -85,6 +86,9 @@ fun AppNavigation() {
             },
             onNavigateToManageLimits = { cardId ->
                 navController.navigate(ManageLimitsRoute(cardId = cardId))
+            },
+            onNavigateToSetResetPin = { cardId ->
+                navController.navigate(SetResetPinRoute(cardId = cardId))
             }
         )
 
