@@ -1,36 +1,49 @@
 package com.shoaib.cards.ui.resetCardPin.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+// Same primary button color as Manage Limits and rest of app
+private val PrimaryButton = Color(0xFFFF9966)
 
 @Composable
 fun ConfirmPinButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Button(
-        onClick = onClick,
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF64B5F6),
-            contentColor = Color.White
-        ),
-        shape = RoundedCornerShape(16.dp)
+            .height(56.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(PrimaryButton)
+            .clickable(
+                onClick = onClick,
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            )
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = "Confirm",
+            color = Color.White,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )

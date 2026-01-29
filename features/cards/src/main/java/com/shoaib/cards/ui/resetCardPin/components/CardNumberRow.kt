@@ -37,9 +37,9 @@ fun CardNumberRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(20.dp))
             .background(SuperAppDesign.GlassWhite)
-            .border(1.dp, SuperAppDesign.GlassBorder, RoundedCornerShape(16.dp))
+            .border(1.dp, SuperAppDesign.GlassBorder, RoundedCornerShape(20.dp))
             .clickable(onClick = onCardClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -61,7 +61,7 @@ fun CardNumberRow(
                 Spacer(Modifier.width(12.dp))
                 Text(
                     text = cardNumber,
-                    color = Color.White,
+                    color = SuperAppDesign.TextPrimary,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )

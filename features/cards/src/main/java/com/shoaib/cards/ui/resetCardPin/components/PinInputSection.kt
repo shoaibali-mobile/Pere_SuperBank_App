@@ -29,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shoaib.design.theme.SuperAppDesign
@@ -41,6 +42,7 @@ fun PinInputSection(
     onPinChange: (List<String>) -> Unit,
     pinReenter: List<String>,
     onPinReenterChange: (List<String>) -> Unit,
+    firstPinBoxFocusRequester: FocusRequester? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -60,7 +62,8 @@ fun PinInputSection(
         PinDigitRow(
             digits = pin,
             onDigitsChange = onPinChange,
-            pinLength = PIN_LENGTH
+            pinLength = PIN_LENGTH,
+            firstBoxFocusRequester = firstPinBoxFocusRequester
         )
         Spacer(Modifier.height(24.dp))
         Text(
@@ -82,6 +85,7 @@ fun PinDigitRow(
     digits: List<String>,
     onDigitsChange: (List<String>) -> Unit,
     pinLength: Int = PIN_LENGTH,
+    firstBoxFocusRequester: FocusRequester? = null,
     modifier: Modifier = Modifier
 ) {
     val focusRequesters = remember { List(pinLength) { FocusRequester() } }
@@ -91,12 +95,23 @@ fun PinDigitRow(
     ) {
         repeat(pinLength) { index ->
             val currentDigit = digits.getOrElse(index) { "" }
+            val boxFocusRequester = if (index == 0 && firstBoxFocusRequester != null) {
+                firstBoxFocusRequester
+            } else {
+                focusRequesters[index]
+            }
             LaunchedEffect(currentDigit) {
                 when {
                     currentDigit.length == 1 && index < pinLength - 1 ->
                         focusRequesters[index + 1].requestFocus()
-                    currentDigit.isEmpty() && index > 0 ->
-                        focusRequesters[index - 1].requestFocus()
+                    currentDigit.isEmpty() && index > 0 -> {
+                        val previousRequester = if (index == 1 && firstBoxFocusRequester != null) {
+                            firstBoxFocusRequester
+                        } else {
+                            focusRequesters[index - 1]
+                        }
+                        previousRequester.requestFocus()
+                    }
                 }
             }
             PinDigitBox(
@@ -106,7 +121,7 @@ fun PinDigitRow(
                     newDigits[index] = s.filter { it.isDigit() }.take(1)
                     onDigitsChange(newDigits)
                 },
-                focusRequester = focusRequesters[index],
+                focusRequester = boxFocusRequester,
                 modifier = Modifier
                     .width(56.dp)
                     .height(56.dp)
@@ -124,9 +139,13 @@ fun PinDigitBox(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color.White.copy(alpha = 0.08f))
-            .border(1.dp, SuperAppDesign.GlassBorder, RoundedCornerShape(12.dp)),
+            .clip(RoundedCornerShape(8.dp))
+            .background(SuperAppDesign.GlassWhite)
+            .border(
+                1.dp,
+                SuperAppDesign.GlassBorder,
+                RoundedCornerShape(8.dp)
+            ),
         contentAlignment = Alignment.Center
     ) {
         BasicTextField(
@@ -141,12 +160,13 @@ fun PinDigitBox(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
             textStyle = TextStyle(
-                color = Color.White,
+                color = SuperAppDesign.TextPrimary,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily.Monospace
             ),
-            cursorBrush = SolidColor(Color(0xFF2196F3)),
+            cursorBrush = SolidColor(Color.Cyan),
             decorationBox = { inner ->
                 Box(contentAlignment = Alignment.Center) {
                     if (value.isEmpty()) {
