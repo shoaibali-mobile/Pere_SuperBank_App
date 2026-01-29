@@ -7,6 +7,10 @@ import com.shoaib.cards.data.CardsApiService
 import com.shoaib.cards.model.CreditCardDto
 import com.shoaib.cards.model.managelimit.CardLimitData
 import com.shoaib.cards.model.managelimit.CardLimitsRequest
+import com.shoaib.cards.model.addon.RequestAddOnCardData
+import com.shoaib.cards.model.addon.RequestAddOnCardRequest
+import com.shoaib.cards.model.autopay.SetAutopayData
+import com.shoaib.cards.model.autopay.SetAutopayRequest
 import com.shoaib.cards.model.setPin.SetPinRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -138,6 +142,70 @@ class CardsRepositoryImpl @Inject constructor(
                 CardResult.Success(Unit)
             } else {
                 CardResult.Error(response.message ?: "Failed to set PIN")
+            }
+        } catch (e: Exception) {
+            val errorMessage = when (e) {
+                is retrofit2.HttpException -> "Server error: ${e.code()}"
+                is java.io.IOException -> "Network error. Please check your connection."
+                else -> e.message ?: "Unknown error occurred"
+            }
+            CardResult.Error(errorMessage, e)
+        }
+    }
+
+    override suspend fun setAutopay(
+        cardId: String,
+        amountOption: String,
+        linkedAccountId: String,
+        autoPayEnabled: Boolean
+    ): CardResult<SetAutopayData> {
+        return try {
+            val tokens = authRepository.getAuthTokens().first()
+            val accessToken = tokens?.accessToken
+                ?: return CardResult.Error("User is not authenticated")
+            val request = SetAutopayRequest(
+                amountOption = amountOption,
+                linkedAccountId = linkedAccountId,
+                autoPayEnabled = autoPayEnabled
+            )
+            val response = apiService.setAutopay("Bearer $accessToken", cardId, request)
+            if (response.success && response.data != null) {
+                CardResult.Success(response.data)
+            } else {
+                CardResult.Error(response.message ?: "Failed to set autopay")
+            }
+        } catch (e: Exception) {
+            val errorMessage = when (e) {
+                is retrofit2.HttpException -> "Server error: ${e.code()}"
+                is java.io.IOException -> "Network error. Please check your connection."
+                else -> e.message ?: "Unknown error occurred"
+            }
+            CardResult.Error(errorMessage, e)
+        }
+    }
+
+    override suspend fun requestAddOnCard(
+        cardId: String,
+        customerID: String,
+        nameOnCard: String,
+        dateOfBirth: String,
+        relationship: String
+    ): CardResult<RequestAddOnCardData> {
+        return try {
+            val tokens = authRepository.getAuthTokens().first()
+            val accessToken = tokens?.accessToken
+                ?: return CardResult.Error("User is not authenticated")
+            val request = RequestAddOnCardRequest(
+                customerID = customerID,
+                nameOnCard = nameOnCard,
+                dateOfBirth = dateOfBirth,
+                relationship = relationship
+            )
+            val response = apiService.requestAddOnCard("Bearer $accessToken", cardId, request)
+            if (response.success && response.data != null) {
+                CardResult.Success(response.data)
+            } else {
+                CardResult.Error(response.message ?: "Failed to submit add-on card request")
             }
         } catch (e: Exception) {
             val errorMessage = when (e) {

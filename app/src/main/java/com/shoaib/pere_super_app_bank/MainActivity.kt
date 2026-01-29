@@ -25,6 +25,8 @@ import com.shoaib.navigation.HomeRoute
 import com.shoaib.pere_super_app_bank.ui.theme.PereSuperAppBankTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.shoaib.navigation.ManageLimitsRoute
+import com.shoaib.navigation.RequestAddOnCardRoute
+import com.shoaib.navigation.SetAutopayRoute
 import com.shoaib.navigation.SetResetPinRoute
 
 @AndroidEntryPoint
@@ -89,6 +91,12 @@ fun AppNavigation() {
             },
             onNavigateToSetResetPin = { cardId ->
                 navController.navigate(SetResetPinRoute(cardId = cardId))
+            },
+            onNavigateToSetAutopay = { cardId ->
+                navController.navigate(SetAutopayRoute(cardId = cardId))
+            },
+            onNavigateToRequestAddOnCard = { cardId ->
+                navController.navigate(RequestAddOnCardRoute(cardId = cardId))
             }
         )
 

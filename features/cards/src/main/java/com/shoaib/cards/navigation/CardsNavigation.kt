@@ -11,14 +11,20 @@ import com.shoaib.navigation.CardDetailsRoute
 
 import com.shoaib.cards.ui.managelimits.ManageLimitsScreen
 import com.shoaib.cards.ui.resetCardPin.SetResetPinScreen
+import com.shoaib.cards.ui.requestAddOnCard.RequestAddOnCardScreen
+import com.shoaib.cards.ui.setAutoPay.SetAutopayScreen
 import com.shoaib.navigation.ManageLimitsRoute
+import com.shoaib.navigation.RequestAddOnCardRoute
+import com.shoaib.navigation.SetAutopayRoute
 import com.shoaib.navigation.SetResetPinRoute
 
 fun NavGraphBuilder.cardsGraph(
     onBack: () -> Unit,
     onOpenCardDetails: (String) -> Unit,
     onNavigateToManageLimits: (String) -> Unit,
-    onNavigateToSetResetPin: (String) -> Unit
+    onNavigateToSetResetPin: (String) -> Unit,
+    onNavigateToSetAutopay: (String) -> Unit,
+    onNavigateToRequestAddOnCard: (String) -> Unit
 ) {
     composable<CardsRoute> {
         CardsScreen(
@@ -45,6 +51,12 @@ fun NavGraphBuilder.cardsGraph(
             },
             onSetResetPinClick = {
                 onNavigateToSetResetPin(route.cardId)
+            },
+            onSetAutopayClick = {
+                onNavigateToSetAutopay(route.cardId)
+            },
+            onRequestAddOnCardClick = {
+                onNavigateToRequestAddOnCard(route.cardId)
             }
         )
     }
@@ -58,5 +70,13 @@ fun NavGraphBuilder.cardsGraph(
 
     composable<SetResetPinRoute> {
         SetResetPinScreen(onBackClick = onBack)
+    }
+
+    composable<SetAutopayRoute> {
+        SetAutopayScreen(onBackClick = onBack)
+    }
+
+    composable<RequestAddOnCardRoute> {
+        RequestAddOnCardScreen(onBackClick = onBack)
     }
 }

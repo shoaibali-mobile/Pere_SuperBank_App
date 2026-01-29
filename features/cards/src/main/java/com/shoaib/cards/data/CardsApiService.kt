@@ -3,6 +3,10 @@ package com.shoaib.cards.data
 import com.shoaib.cards.model.CreditCardsData
 import com.shoaib.cards.model.managelimit.CardLimitData
 import com.shoaib.cards.model.managelimit.CardLimitsRequest
+import com.shoaib.cards.model.addon.RequestAddOnCardData
+import com.shoaib.cards.model.addon.RequestAddOnCardRequest
+import com.shoaib.cards.model.autopay.SetAutopayData
+import com.shoaib.cards.model.autopay.SetAutopayRequest
 import com.shoaib.cards.model.setPin.SetPinRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -39,4 +43,17 @@ interface CardsApiService {
         @Body request: SetPinRequest
     ): ApiResponse<Unit>
 
+    @POST("api/cards/credit/{cardId}/autopay")
+    suspend fun setAutopay(
+        @Header("Authorization") token: String,
+        @Path("cardId") cardId: String,
+        @Body request: SetAutopayRequest
+    ): ApiResponse<SetAutopayData>
+
+    @POST("api/cards/credit/{cardId}/addon")
+    suspend fun requestAddOnCard(
+        @Header("Authorization") token: String,
+        @Path("cardId") cardId: String,
+        @Body request: RequestAddOnCardRequest
+    ): ApiResponse<RequestAddOnCardData>
 }

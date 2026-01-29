@@ -73,7 +73,9 @@ fun CardDetailsScreen(
     onBackClick: () -> Unit = {},
     onManageCardClick: () -> Unit = {},
     onRedeemClick: () -> Unit = {},
-    onSetResetPinClick: () -> Unit = {}
+    onSetResetPinClick: () -> Unit = {},
+    onSetAutopayClick: () -> Unit = {},
+    onRequestAddOnCardClick: () -> Unit = {}
 ) {
     val viewModel: CardDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -84,7 +86,9 @@ fun CardDetailsScreen(
         onBackClick = onBackClick,
         onManageCardClick = onManageCardClick,
         onRedeemClick = onRedeemClick,
-        onSetResetPinClick = onSetResetPinClick
+        onSetResetPinClick = onSetResetPinClick,
+        onSetAutopayClick = onSetAutopayClick,
+        onRequestAddOnCardClick = onRequestAddOnCardClick
     )
 }
 
@@ -96,7 +100,9 @@ fun CardDetailsContent(
     onBackClick: () -> Unit = {},
     onManageCardClick: () -> Unit = {},
     onRedeemClick: () -> Unit = {},
-    onSetResetPinClick: () -> Unit = {}
+    onSetResetPinClick: () -> Unit = {},
+    onSetAutopayClick: () -> Unit = {},
+    onRequestAddOnCardClick: () -> Unit = {}
 ) {
     // State to control card flip
     var cardFace by remember { mutableStateOf(CardFace.Front) }
@@ -365,13 +371,19 @@ fun CardDetailsContent(
                     showBottomSheet = false
                     onManageCardClick()
                 },
-                onManageAutoPayClick = { /* TODO: Handle manage autopay */ },
+                onManageAutoPayClick = {
+                    showBottomSheet = false
+                    onSetAutopayClick()
+                },
                 onSetResetPinClick = {
                     showBottomSheet = false   // close sheet
                     onSetResetPinClick()
                 },
                 onSmartEmiClick = { /* TODO: Handle SmartEMI */ },
-                onRequestAddOnCardClick = { /* TODO: Handle add-on card */ },
+                onRequestAddOnCardClick = {
+                    showBottomSheet = false
+                    onRequestAddOnCardClick()
+                },
                 onUpgradeCardClick = { /* TODO: Handle upgrade card */ },
                 onIncreaseCreditLimitClick = { /* TODO: Handle increase limit */ }
             )
@@ -404,6 +416,8 @@ private fun CardDetailsScreenPreview() {
         onBackClick = {},
         onManageCardClick = {},
         onRedeemClick = {},
-        onSetResetPinClick = {}
+        onSetResetPinClick = {},
+        onSetAutopayClick = {},
+        onRequestAddOnCardClick = {}
     )
 }
