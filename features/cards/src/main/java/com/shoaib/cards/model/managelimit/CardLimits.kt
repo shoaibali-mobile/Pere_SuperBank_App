@@ -2,11 +2,6 @@ package com.shoaib.cards.model.managelimit
 
 import com.google.gson.annotations.SerializedName
 
-data class CardLimitsResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: CardLimitData
-)
-
 data class CardLimitsRequest(
     @SerializedName("domesticLimits")
     val domesticLimits: List<LimitItem>,

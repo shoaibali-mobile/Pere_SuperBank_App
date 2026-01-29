@@ -7,6 +7,7 @@ import com.shoaib.cards.data.CardsApiService
 import com.shoaib.cards.model.CreditCardDto
 import com.shoaib.cards.model.managelimit.CardLimitData
 import com.shoaib.cards.model.managelimit.CardLimitsRequest
+import com.shoaib.cards.model.setPin.SetPinRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -42,11 +43,11 @@ class CardsRepositoryImpl @Inject constructor(
             val response = apiService.getCreditCards("Bearer $accessToken")
 
             // 3. Update cache if successful
-            if (response.success) {
+            if (response.success && response.data != null) {
                 cardsCache.value = response.data.cards
                 CardResult.Success(Unit)
             } else {
-                CardResult.Error("Failed to fetch cards: Success flag is false")
+                CardResult.Error(response.message ?: "Failed to fetch cards")
             }
         } catch (e: Exception) {
             val errorMessage = when (e) {
@@ -64,13 +65,13 @@ class CardsRepositoryImpl @Inject constructor(
             val tokens = authRepository.getAuthTokens().first()
             val accessToken = tokens?.accessToken ?: return CardResult.Error("User is not authenticated")
             val response = apiService.getCardLimits("Bearer $accessToken", cardId)
-            
-            if (response.success) {
+
+            if (response.success && response.data != null) {
                 Log.d("CardsRepository", "Fetch limits SUCCESS: ${response.data}")
                 CardResult.Success(response.data)
             } else {
                 Log.e("CardsRepository", "Fetch limits FAILED: success=false")
-                CardResult.Error("Failed to fetch limits")
+                CardResult.Error(response.message ?: "Failed to fetch limits")
             }
         } catch (e: Exception) {
             Log.e("CardsRepository", "Fetch limits EXCEPTION", e)
@@ -97,16 +98,48 @@ class CardsRepositoryImpl @Inject constructor(
             Log.d("CardsRepository", "Sending PUT request with: $request")
             
             val response = apiService.updateCardLimits("Bearer $accessToken", cardId, request)
-            
-            if (response.success) {
+
+            if (response.success && response.data != null) {
                 Log.d("CardsRepository", "Update limits SUCCESS: ${response.data}")
                 CardResult.Success(response.data)
             } else {
                 Log.e("CardsRepository", "Update limits FAILED: success=false")
-                CardResult.Error("Failed to update limits")
+                CardResult.Error(response.message ?: "Failed to update limits")
             }
         } catch (e: Exception) {
             Log.e("CardsRepository", "Update limits EXCEPTION", e)
+            val errorMessage = when (e) {
+                is retrofit2.HttpException -> "Server error: ${e.code()}"
+                is java.io.IOException -> "Network error. Please check your connection."
+                else -> e.message ?: "Unknown error occurred"
+            }
+            CardResult.Error(errorMessage, e)
+        }
+    }
+
+    override suspend fun setResetPin(
+        cardId: String,
+        newPin: String,
+        confirmPin: String,
+        termsAccepted: Boolean
+    ): CardResult<Unit> {
+
+        return try {
+            val tokens = authRepository.getAuthTokens().first()
+            val accessToken = tokens?.accessToken
+                ?: return CardResult.Error("User is not authenticated")
+            val request = SetPinRequest(
+                newPIN = newPin,
+                confirmPin = confirmPin,
+                termsAccepted = termsAccepted
+            )
+            val response = apiService.setResetPin("Bearer $accessToken", cardId, request)
+            if (response.success) {
+                CardResult.Success(Unit)
+            } else {
+                CardResult.Error(response.message ?: "Failed to set PIN")
+            }
+        } catch (e: Exception) {
             val errorMessage = when (e) {
                 is retrofit2.HttpException -> "Server error: ${e.code()}"
                 is java.io.IOException -> "Network error. Please check your connection."

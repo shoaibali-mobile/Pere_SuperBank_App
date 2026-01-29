@@ -2,11 +2,6 @@ package com.shoaib.cards.model
 
 import com.google.gson.annotations.SerializedName
 
-data class CreditCardsResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data:CreditCardsData
-)
-
 data class CreditCardsData(
     @SerializedName("cards") val cards:List<CreditCardDto>
 )

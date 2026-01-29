@@ -9,7 +9,14 @@ interface CardsRepository {
     suspend fun refreshCards(): CardResult<Unit> // Fetches from API & updates cache
     fun getCardsStream(): Flow<List<CreditCardDto>> // UI observes this
     fun getCardById(id: String): Flow<CreditCardDto?> // Detail UI observes this
-    
+
     suspend fun getCardLimits(cardId: String): CardResult<CardLimitData>
     suspend fun updateCardLimits(cardId: String, limits: CardLimitData): CardResult<CardLimitData>
+
+    suspend fun setResetPin(
+        cardId: String,
+        newPin: String,
+        confirmPin: String,
+        termsAccepted: Boolean
+    ): CardResult<Unit>
 }

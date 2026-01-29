@@ -35,8 +35,10 @@ import com.shoaib.cards.utils.maskCardNumberForPin
 import com.shoaib.cards.viewmodel.SetResetPinViewModel
 import com.shoaib.cards.viewmodel.SnackbarEvent
 import com.shoaib.design.components.GlassScaffold
+import com.shoaib.design.components.SuperLoading
 import com.shoaib.design.components.ThemedSnackBarHost
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 
 private const val PIN_LENGTH = 4
 
@@ -75,6 +77,7 @@ private fun SetResetPinScreenContent(
     val isConfirmEnabled =
         pin.all { it.length == 1 } && pinReenter.all { it.length == 1 } && pin == pinReenter && termsAccepted
     val firstPinBoxFocusRequester = remember { FocusRequester() }
+    val isLoading by (viewModel?.isLoading ?: flowOf(false)).collectAsState(initial = false)
 
     LaunchedEffect(viewModel) {
         viewModel ?: return@LaunchedEffect
@@ -86,6 +89,8 @@ private fun SetResetPinScreenContent(
                         message = event.message,
                         duration = SnackbarDuration.Short
                     )
+                    delay(500)
+                    onBackClick()
                 }
                 is SnackbarEvent.Error -> {
                     isErrorSnackbar = true
@@ -168,6 +173,13 @@ private fun SetResetPinScreenContent(
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
         )
+
+        if (isLoading) {
+            SuperLoading(
+                modifier = Modifier.fillMaxSize(),
+                message = "Updating PIN..."
+            )
+        }
     }
 }
 

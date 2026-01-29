@@ -3,6 +3,7 @@ package com.shoaib.cards.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shoaib.cards.data.CardResult
 import com.shoaib.cards.data.repository.CardsRepository
 import com.shoaib.cards.model.CreditCardDto
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +34,9 @@ class SetResetPinViewModel @Inject constructor(
     private val _snackbarEvent = MutableSharedFlow<SnackbarEvent>()
     val snackbarEvent: SharedFlow<SnackbarEvent> = _snackbarEvent.asSharedFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     private val cardId: String = checkNotNull(savedStateHandle["cardId"])
 
     private val _card = MutableStateFlow<CreditCardDto?>(null)
@@ -47,16 +51,26 @@ class SetResetPinViewModel @Inject constructor(
     }
 
 
-    fun submitPin(newPin:String ,  confirmPin : String , termsAccepted:Boolean){
-
+    fun submitPin(newPin: String, confirmPin: String, termsAccepted: Boolean) {
         viewModelScope.launch {
-
-            if(newPin!=confirmPin){
+            if (newPin != confirmPin) {
                 _snackbarEvent.emit(SnackbarEvent.Error("PINs do not match"))
                 return@launch
             }
-
-            _snackbarEvent.emit(SnackbarEvent.Success("PIN updated successfully"))
+            _isLoading.value = true
+            try {
+                when (val result = repository.setResetPin(cardId, newPin, confirmPin, termsAccepted)) {
+                    is CardResult.Success -> {
+                        _snackbarEvent.emit(SnackbarEvent.Success("PIN updated successfully"))
+                    }
+                    is CardResult.Error -> {
+                        _snackbarEvent.emit(SnackbarEvent.Error(result.message))
+                    }
+                    is CardResult.Loading -> { }
+                }
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 }
