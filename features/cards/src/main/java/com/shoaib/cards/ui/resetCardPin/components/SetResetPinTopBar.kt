@@ -34,8 +34,8 @@ fun SetResetPinTopBar(
             .fillMaxWidth()
             .padding(
                 top = TopBarTopPadding,
-                start = TopBarHorizontalPadding,
-                end = TopBarHorizontalPadding,
+                start = 0.dp,
+                end = 0.dp,
                 bottom = 16.dp
             )
     ) {
