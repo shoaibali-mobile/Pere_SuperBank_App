@@ -5,11 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shoaib.cards.data.CardResult
 import com.shoaib.cards.data.repository.CardsRepository
+import com.shoaib.cards.model.CreditCardDto
 import com.shoaib.cards.model.managelimit.CardLimitData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,8 +32,16 @@ class ManageLimitsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<ManageLimitsUiState>(ManageLimitsUiState.Loading)
     val uiState: StateFlow<ManageLimitsUiState> = _uiState.asStateFlow()
 
+    private val _card = MutableStateFlow<CreditCardDto?>(null)
+    val card: StateFlow<CreditCardDto?> = _card.asStateFlow()
+
     init {
         fetchLimits()
+        viewModelScope.launch {
+            repository.getCardById(cardId)
+                .catch { _card.value = null }
+                .collect { _card.value = it }
+        }
     }
 
     private fun fetchLimits() {

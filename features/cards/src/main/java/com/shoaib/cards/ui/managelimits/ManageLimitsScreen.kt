@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.shoaib.cards.model.managelimit.CardLimitData
 import com.shoaib.cards.ui.components.NavigationHeader
+import com.shoaib.cards.utils.maskCardNumber
 import com.shoaib.cards.ui.managelimits.components.LimitItemRow
 import com.shoaib.cards.viewmodel.ManageLimitsUiState
 import com.shoaib.cards.viewmodel.ManageLimitsViewModel
@@ -47,8 +48,10 @@ fun ManageLimitsScreen(
 ) {
     val viewModel: ManageLimitsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
+    val card by viewModel.card.collectAsState()
 
     var selectedTab by remember { mutableStateOf(0) } // 0: Domestic, 1: International
+    var editingLimitIndex by remember { mutableStateOf<Int?>(null) }
 
     GlassScaffold(modifier = modifier) { innerPadding ->
         Column(
@@ -67,6 +70,15 @@ fun ManageLimitsScreen(
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
+
+            card?.let { c ->
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "${c.cardType}: ${c.cardNumber.maskCardNumber(4)}",
+                    color = Color.White.copy(alpha = 0.9f),
+                    fontSize = 14.sp
+                )
+            }
             
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -81,13 +93,19 @@ fun ManageLimitsScreen(
                 TabButton(
                     text = "Domestic",
                     isSelected = selectedTab == 0,
-                    onClick = { selectedTab = 0 },
+                    onClick = {
+                        selectedTab = 0
+                        editingLimitIndex = null
+                    },
                     modifier = Modifier.weight(1f)
                 )
                 TabButton(
                     text = "International",
                     isSelected = selectedTab == 1,
-                    onClick = { selectedTab = 1 },
+                    onClick = {
+                        selectedTab = 1
+                        editingLimitIndex = null
+                    },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -121,12 +139,14 @@ fun ManageLimitsScreen(
                         limitsList.forEachIndexed { index, limit ->
                             LimitItemRow(
                                 limit = limit,
+                                isEditing = editingLimitIndex == index,
+                                onSetLimitClick = { editingLimitIndex = index },
                                 onToggle = { isEnabled ->
                                     val updatedLimit = limit.copy(isEnabled = isEnabled)
                                     val updatedList = limitsList.toMutableList().apply {
                                         set(index, updatedLimit)
                                     }
-                                    
+                                    if (!isEnabled) editingLimitIndex = null
                                     currentLimits = if (selectedTab == 0) {
                                         currentLimits.copy(domesticLimits = updatedList)
                                     } else {
@@ -138,7 +158,6 @@ fun ManageLimitsScreen(
                                     val updatedList = limitsList.toMutableList().apply {
                                         set(index, updatedLimit)
                                     }
-                                    
                                     currentLimits = if (selectedTab == 0) {
                                         currentLimits.copy(domesticLimits = updatedList)
                                     } else {
@@ -156,7 +175,10 @@ fun ManageLimitsScreen(
                     val hasChanges = currentLimits != state.limits
                     
                     Button(
-                        onClick = { viewModel.updateLimits(currentLimits) },
+                        onClick = {
+                            editingLimitIndex = null
+                            viewModel.updateLimits(currentLimits)
+                        },
                         enabled = hasChanges,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -170,7 +192,7 @@ fun ManageLimitsScreen(
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Text(
-                            text = "Save Changes",
+                            text = "Update",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )

@@ -3,6 +3,17 @@ package com.shoaib.cards.utils
 import com.shoaib.cards.R
 
 /**
+ * Masks a card number, showing only the last [visibleLastDigits] digits.
+ * Example: "4532123456789012".maskCardNumber(4) -> "************9012"
+ */
+fun String.maskCardNumber(visibleLastDigits: Int = 4): String {
+    val digits = this.filter { it.isDigit() }
+    if (digits.length <= visibleLastDigits) return digits
+    val last = digits.takeLast(visibleLastDigits)
+    return "************$last"
+}
+
+/**
  * Utility functions for Card features
  */
 object CardUtils {
