@@ -25,15 +25,21 @@ private val PrimaryButton = Color(0xFFFF9966)
 @Composable
 fun ConfirmPinButton(
     onClick: () -> Unit,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier
+
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(PrimaryButton)
+            .background(
+                if(enabled) PrimaryButton
+                       else Color.White.copy(alpha=0.2f)
+            )
             .clickable(
+                enabled = enabled,
                 onClick = onClick,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null

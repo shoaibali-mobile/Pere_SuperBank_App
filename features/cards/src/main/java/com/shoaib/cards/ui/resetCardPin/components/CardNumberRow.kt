@@ -48,7 +48,7 @@ fun CardNumberRow(
             Text(
                 text = "Card Number",
                 color = SuperAppDesign.TextSecondary,
-                fontSize = 12.sp
+                fontSize = 14.sp
             )
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {

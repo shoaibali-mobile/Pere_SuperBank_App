@@ -62,6 +62,7 @@ private fun SetResetPinScreenContent(
     var pin by remember { mutableStateOf(List(PIN_LENGTH) { "" }) }
     var pinReenter by remember { mutableStateOf(List(PIN_LENGTH) { "" }) }
     var termsAccepted by remember { mutableStateOf(false) }
+    val isConfirmEnabled = pin.all { it.length == 1 } && pinReenter.all { it.length == 1 } && pin == pinReenter && termsAccepted
     val firstPinBoxFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -112,7 +113,10 @@ private fun SetResetPinScreenContent(
 
         Spacer(Modifier.height(24.dp))
 
-        ConfirmPinButton(onClick = { /* TODO: confirm PIN reset */ })
+        ConfirmPinButton(
+            onClick = { /* TODO: confirm PIN reset */ },
+            enabled = isConfirmEnabled
+        )
 
         Spacer(Modifier.height(32.dp))
     }
