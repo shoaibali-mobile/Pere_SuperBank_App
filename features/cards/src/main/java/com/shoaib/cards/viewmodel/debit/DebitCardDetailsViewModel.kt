@@ -1,9 +1,11 @@
-package com.shoaib.cards.viewmodel
+package com.shoaib.cards.viewmodel.debit
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shoaib.cards.data.credit.repository.CreditCardsRepository
+import com.shoaib.cards.data.debit.repository.DebitCardsRepository
+import com.shoaib.cards.viewmodel.CardDetailsUiModel
+import com.shoaib.cards.viewmodel.CardDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,9 +15,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CardDetailsViewModel @Inject constructor(
+class DebitCardDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    repository: CreditCardsRepository
+    repository: DebitCardsRepository
 ) : ViewModel() {
 
     // Get cardId from SavedStateHandle
@@ -23,24 +25,25 @@ class CardDetailsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repository.refreshCards()
+            repository.refreshDebitCards()
         }
     }
 
-    // Observe all cards to support swiping
-    val uiState: StateFlow<CardDetailsUiState> = repository.getCardsStream()
+    val uiState: StateFlow<CardDetailsUiState> = repository.getDebitCardsStream()
         .map { cards ->
             val uiModels = cards.map { card ->
                 CardDetailsUiModel(
                     id = card.id,
                     cardNumber = card.cardNumber,
-                    cardHolderName = card.cardHolderName,
+                    cardHolderName = card.cardholderName,
                     cardType = card.cardType,
                     expiryMonth = card.expiryMonth,
                     expiryYear = card.expiryYear,
                     cvv = card.cvv,
-                    rewardsPoints = card.rewardsPoints,
-                    isCredit = true
+                    rewardsPoints = 0, // Debit cards usually don't have this in this app context
+                    isCredit = false,
+                    bankName = card.bankName,
+                    accountNumber = card.accountNumber
                 )
             }
 
@@ -49,10 +52,11 @@ class CardDetailsViewModel @Inject constructor(
             } else {
                 uiModels.indexOfFirst { it.id == cardId }
             }
+
             if (index != -1) {
                 CardDetailsUiState.Success(uiModels, index)
             } else {
-                CardDetailsUiState.Error("Card not found")
+                CardDetailsUiState.Error("Debit Card not found")
             }
         }
         .stateIn(

@@ -1,14 +1,15 @@
-package com.shoaib.cards.ui.details
+package com.shoaib.cards.ui.debit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.shoaib.cards.viewmodel.CardDetailsViewModel
+import com.shoaib.cards.ui.details.CardDetailsContent
+import com.shoaib.cards.viewmodel.debit.DebitCardDetailsViewModel
 
 @Composable
-fun CardDetailsScreen(
+fun DebitCardDetailsScreen(
     modifier: Modifier = Modifier,
     cardId: String,
     onBackClick: () -> Unit = {},
@@ -18,7 +19,7 @@ fun CardDetailsScreen(
     onSetAutopayClick: () -> Unit = {},
     onRequestAddOnCardClick: () -> Unit = {}
 ) {
-    val viewModel: CardDetailsViewModel = hiltViewModel()
+    val viewModel: DebitCardDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     CardDetailsContent(

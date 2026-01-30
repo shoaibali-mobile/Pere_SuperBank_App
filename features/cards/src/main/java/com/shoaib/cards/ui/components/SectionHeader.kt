@@ -16,10 +16,12 @@ import com.shoaib.design.theme.SuperAppDesign
  * Displays section title and subtitle
  */
 @Composable
-fun SectionHeader() {
+fun SectionHeader(
+    title: String = "Your Cards"
+) {
     Column {
         Text(
-            text = "Your Cards",
+            text = title,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = SuperAppDesign.TextPrimary

@@ -1,4 +1,4 @@
-package com.shoaib.cards.ui.requestAddOnCard.components
+package com.shoaib.cards.ui.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,10 +18,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shoaib.design.theme.SuperAppDesign
 
+/**
+ * Shared top bar with back button and centered title. Used by Set Autopay,
+ * Request Add-On Card, Set/Reset PIN and similar screens.
+ */
 @Composable
-fun RequestAddOnCardTopBar(
+fun ScreenTopBar(
     onBackClick: () -> Unit,
-    title: String = "Request Add-On Card",
+    title: String,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -45,7 +49,7 @@ fun RequestAddOnCardTopBar(
         Text(
             text = title,
             color = SuperAppDesign.TextPrimary,
-            fontSize = 18.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .weight(1f)

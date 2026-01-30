@@ -22,11 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.shoaib.cards.ui.components.PrimaryActionButton
+import com.shoaib.cards.ui.components.ScreenTopBar
 import com.shoaib.cards.ui.setAutoPay.components.AutoPayToggleRow
 import com.shoaib.cards.ui.setAutoPay.components.CardTypeRow
-import com.shoaib.cards.ui.setAutoPay.components.SaveAutopayButton
 import com.shoaib.cards.ui.setAutoPay.components.SelectBillerSection
-import com.shoaib.cards.ui.setAutoPay.components.SetAutopayTopBar
 import com.shoaib.cards.utils.maskCardNumber
 import com.shoaib.cards.viewmodel.SetAutopayViewModel
 import com.shoaib.cards.viewmodel.SnackbarEvent
@@ -101,7 +101,7 @@ private fun SetAutopayContent(
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            SetAutopayTopBar(onBackClick = onBackClick)
+            ScreenTopBar(onBackClick = onBackClick, title = "Set Autopay")
 
             Spacer(Modifier.height(24.dp))
 
@@ -128,7 +128,8 @@ private fun SetAutopayContent(
 
             Spacer(Modifier.height(24.dp))
 
-            SaveAutopayButton(
+            PrimaryActionButton(
+                text = "Save",
                 onClick = {
                     viewModel?.submitAutopay(
                         amountOption = selectedBiller!!,

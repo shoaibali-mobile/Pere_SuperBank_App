@@ -1,4 +1,4 @@
-package com.shoaib.cards.ui.setAutoPay.components
+package com.shoaib.cards.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,13 +19,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val PrimaryButton = Color(0xFFFF9966)
+private val PrimaryButtonColor = Color(0xFFFF9966)
 
+/**
+ * Shared primary action button (Save, Submit, etc.). Used by Set Autopay,
+ * Request Add-On Card and similar flows.
+ */
 @Composable
-fun SaveAutopayButton(
+fun PrimaryActionButton(
+    text: String,
     onClick: () -> Unit,
-    enabled: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Box(
         modifier = modifier
@@ -33,7 +38,7 @@ fun SaveAutopayButton(
             .height(56.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(
-                if (enabled) PrimaryButton
+                if (enabled) PrimaryButtonColor
                 else Color.White.copy(alpha = 0.2f)
             )
             .clickable(
@@ -46,7 +51,7 @@ fun SaveAutopayButton(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Save",
+            text = text,
             color = Color.White,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold

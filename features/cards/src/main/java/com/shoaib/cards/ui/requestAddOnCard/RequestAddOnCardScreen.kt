@@ -22,11 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.shoaib.cards.ui.components.PrimaryActionButton
+import com.shoaib.cards.ui.components.ScreenTopBar
 import com.shoaib.cards.ui.requestAddOnCard.components.AddOnFormField
 import com.shoaib.cards.ui.requestAddOnCard.components.DateOfBirthField
 import com.shoaib.cards.ui.requestAddOnCard.components.RelationshipDropdownField
-import com.shoaib.cards.ui.requestAddOnCard.components.RequestAddOnCardTopBar
-import com.shoaib.cards.ui.requestAddOnCard.components.SubmitAddOnButton
 import com.shoaib.cards.viewmodel.RequestAddOnCardViewModel
 import com.shoaib.cards.viewmodel.SnackbarEvent
 import com.shoaib.design.components.GlassScaffold
@@ -102,7 +102,7 @@ private fun RequestAddOnCardContent(
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            RequestAddOnCardTopBar(onBackClick = onBackClick)
+            ScreenTopBar(onBackClick = onBackClick, title = "Request Add-On Card")
 
             Spacer(Modifier.height(24.dp))
 
@@ -130,7 +130,8 @@ private fun RequestAddOnCardContent(
 
             Spacer(Modifier.height(24.dp))
 
-            SubmitAddOnButton(
+            PrimaryActionButton(
+                text = "Submit",
                 onClick = {
                     viewModel?.submitRequest(
                         customerID = customerID.trim(),

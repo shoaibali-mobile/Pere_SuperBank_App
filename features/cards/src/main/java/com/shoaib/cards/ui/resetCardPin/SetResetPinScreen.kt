@@ -29,7 +29,7 @@ import com.shoaib.cards.ui.resetCardPin.components.ConfirmPinButton
 import com.shoaib.cards.ui.resetCardPin.components.PhysicalPinInfoText
 import com.shoaib.cards.ui.resetCardPin.components.PinInputSection
 import com.shoaib.cards.ui.resetCardPin.components.RequestPhysicalPinButton
-import com.shoaib.cards.ui.resetCardPin.components.SetResetPinTopBar
+import com.shoaib.cards.ui.components.ScreenTopBar
 import com.shoaib.cards.ui.resetCardPin.components.TermsCheckboxRow
 import com.shoaib.cards.utils.maskCardNumberForPin
 import com.shoaib.cards.viewmodel.SetResetPinViewModel
@@ -115,7 +115,7 @@ private fun SetResetPinScreenContent(
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            SetResetPinTopBar(onBackClick = onBackClick)
+            ScreenTopBar(onBackClick = onBackClick, title = "Set/Reset PIN")
 
             Spacer(Modifier.height(24.dp))
 

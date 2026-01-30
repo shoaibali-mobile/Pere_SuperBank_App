@@ -32,7 +32,16 @@ object ProfileRoute
 object CardsRoute
 
 @Serializable
+object DebitCardsRoute
+
+@Serializable
+object CreditCardsRoute
+
+@Serializable
 data class CardDetailsRoute(val cardId: String)
+
+@Serializable
+data class DebitCardDetailsRoute(val cardId: String)
 
 @Serializable
 data class ManageLimitsRoute(val cardId: String)

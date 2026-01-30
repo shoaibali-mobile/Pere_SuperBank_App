@@ -21,6 +21,9 @@ import com.shoaib.cards.navigation.cardsGraph
 import com.shoaib.home.navigation.homeGraph
 import com.shoaib.navigation.CardsRoute
 import com.shoaib.navigation.CardDetailsRoute
+import com.shoaib.navigation.CreditCardsRoute
+import com.shoaib.navigation.DebitCardDetailsRoute
+import com.shoaib.navigation.DebitCardsRoute
 import com.shoaib.navigation.HomeRoute
 import com.shoaib.pere_super_app_bank.ui.theme.PereSuperAppBankTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -85,6 +88,15 @@ fun AppNavigation() {
             },
             onOpenCardDetails = { cardId ->
                 navController.navigate(CardDetailsRoute(cardId = cardId))
+            },
+            onOpenDebitCardDetails = { cardId ->
+                navController.navigate(DebitCardDetailsRoute(cardId = cardId))
+            },
+            onNavigateToDebitCards = {
+                navController.navigate(DebitCardsRoute)
+            },
+            onNavigateToCreditCards = {
+                navController.navigate(CreditCardsRoute)
             },
             onNavigateToManageLimits = { cardId ->
                 navController.navigate(ManageLimitsRoute(cardId = cardId))
