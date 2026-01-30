@@ -7,6 +7,7 @@ import com.shoaib.cards.model.addon.RequestAddOnCardData
 import com.shoaib.cards.model.addon.RequestAddOnCardRequest
 import com.shoaib.cards.model.autopay.SetAutopayData
 import com.shoaib.cards.model.autopay.SetAutopayRequest
+import com.shoaib.cards.model.debit.DebitCardsData
 import com.shoaib.cards.model.setPin.SetPinRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -56,4 +57,10 @@ interface CardsApiService {
         @Path("cardId") cardId: String,
         @Body request: RequestAddOnCardRequest
     ): ApiResponse<RequestAddOnCardData>
+
+
+    @GET("api/cards/debit")
+    suspend fun getDebitCards(
+        @Header("Authorization") token: String
+    ): ApiResponse<DebitCardsData>
 }
