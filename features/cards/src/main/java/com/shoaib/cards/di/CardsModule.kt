@@ -1,8 +1,8 @@
 package com.shoaib.cards.di
 
 import com.shoaib.cards.data.CardsApiService
-import com.shoaib.cards.data.repository.CardsRepository
-import com.shoaib.cards.data.repository.CardsRepositoryImpl
+import com.shoaib.cards.data.credit.repository.CreditCardsRepository
+import com.shoaib.cards.data.credit.repository.CreditCardsRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +22,7 @@ object CardsModule {
 
     @Provides
     @Singleton
-    fun provideCardsRepository(impl: CardsRepositoryImpl): CardsRepository {
+    fun provideCreditCardsRepository(impl: CreditCardsRepositoryImpl): CreditCardsRepository {
         return impl
     }
 }

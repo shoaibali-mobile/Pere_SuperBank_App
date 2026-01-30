@@ -1,16 +1,16 @@
-package com.shoaib.cards.data.repository
+package com.shoaib.cards.data.credit.repository
 
 import android.util.Log
 import com.shoaib.api.AuthRepository
 import com.shoaib.cards.data.CardResult
 import com.shoaib.cards.data.CardsApiService
 import com.shoaib.cards.model.CreditCardDto
-import com.shoaib.cards.model.managelimit.CardLimitData
-import com.shoaib.cards.model.managelimit.CardLimitsRequest
 import com.shoaib.cards.model.addon.RequestAddOnCardData
 import com.shoaib.cards.model.addon.RequestAddOnCardRequest
 import com.shoaib.cards.model.autopay.SetAutopayData
 import com.shoaib.cards.model.autopay.SetAutopayRequest
+import com.shoaib.cards.model.managelimit.CardLimitData
+import com.shoaib.cards.model.managelimit.CardLimitsRequest
 import com.shoaib.cards.model.setPin.SetPinRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,12 +20,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CardsRepositoryImpl @Inject constructor(
+class CreditCardsRepositoryImpl @Inject constructor(
     private val apiService: CardsApiService,
     private val authRepository: AuthRepository
-) : CardsRepository {
+) : CreditCardsRepository {
 
-    // Single Source of Truth: Cache all cards in memory
+    // Single Source of Truth: Cache all credit cards in memory
     private val cardsCache = MutableStateFlow<List<CreditCardDto>>(emptyList())
 
     override fun getCardsStream(): Flow<List<CreditCardDto>> = cardsCache
@@ -65,20 +65,20 @@ class CardsRepositoryImpl @Inject constructor(
 
     override suspend fun getCardLimits(cardId: String): CardResult<CardLimitData> {
         return try {
-            Log.d("CardsRepository", "Fetching limits for cardId: $cardId")
+            Log.d("CreditCardsRepository", "Fetching limits for cardId: $cardId")
             val tokens = authRepository.getAuthTokens().first()
             val accessToken = tokens?.accessToken ?: return CardResult.Error("User is not authenticated")
             val response = apiService.getCardLimits("Bearer $accessToken", cardId)
 
             if (response.success && response.data != null) {
-                Log.d("CardsRepository", "Fetch limits SUCCESS: ${response.data}")
+                Log.d("CreditCardsRepository", "Fetch limits SUCCESS: ${response.data}")
                 CardResult.Success(response.data)
             } else {
-                Log.e("CardsRepository", "Fetch limits FAILED: success=false")
+                Log.e("CreditCardsRepository", "Fetch limits FAILED: success=false")
                 CardResult.Error(response.message ?: "Failed to fetch limits")
             }
         } catch (e: Exception) {
-            Log.e("CardsRepository", "Fetch limits EXCEPTION", e)
+            Log.e("CreditCardsRepository", "Fetch limits EXCEPTION", e)
             val errorMessage = when (e) {
                 is retrofit2.HttpException -> "Server error: ${e.code()}"
                 is java.io.IOException -> "Network error. Please check your connection."
@@ -90,28 +90,28 @@ class CardsRepositoryImpl @Inject constructor(
 
     override suspend fun updateCardLimits(cardId: String, limits: CardLimitData): CardResult<CardLimitData> {
         return try {
-            Log.d("CardsRepository", "Updating limits for cardId: $cardId")
+            Log.d("CreditCardsRepository", "Updating limits for cardId: $cardId")
             val tokens = authRepository.getAuthTokens().first()
             val accessToken = tokens?.accessToken ?: return CardResult.Error("User is not authenticated")
-            
+
             // Map to request model (exclude cardId from body)
             val request = CardLimitsRequest(
                 domesticLimits = limits.domesticLimits,
                 internationalLimits = limits.internationalLimits
             )
-            Log.d("CardsRepository", "Sending PUT request with: $request")
-            
+            Log.d("CreditCardsRepository", "Sending PUT request with: $request")
+
             val response = apiService.updateCardLimits("Bearer $accessToken", cardId, request)
 
             if (response.success && response.data != null) {
-                Log.d("CardsRepository", "Update limits SUCCESS: ${response.data}")
+                Log.d("CreditCardsRepository", "Update limits SUCCESS: ${response.data}")
                 CardResult.Success(response.data)
             } else {
-                Log.e("CardsRepository", "Update limits FAILED: success=false")
+                Log.e("CreditCardsRepository", "Update limits FAILED: success=false")
                 CardResult.Error(response.message ?: "Failed to update limits")
             }
         } catch (e: Exception) {
-            Log.e("CardsRepository", "Update limits EXCEPTION", e)
+            Log.e("CreditCardsRepository", "Update limits EXCEPTION", e)
             val errorMessage = when (e) {
                 is retrofit2.HttpException -> "Server error: ${e.code()}"
                 is java.io.IOException -> "Network error. Please check your connection."

@@ -1,4 +1,4 @@
-package com.shoaib.cards.data.repository
+package com.shoaib.cards.data.credit.repository
 
 import com.shoaib.cards.data.CardResult
 import com.shoaib.cards.model.CreditCardDto
@@ -7,7 +7,7 @@ import com.shoaib.cards.model.autopay.SetAutopayData
 import com.shoaib.cards.model.managelimit.CardLimitData
 import kotlinx.coroutines.flow.Flow
 
-interface CardsRepository {
+interface CreditCardsRepository {
     suspend fun refreshCards(): CardResult<Unit> // Fetches from API & updates cache
     fun getCardsStream(): Flow<List<CreditCardDto>> // UI observes this
     fun getCardById(id: String): Flow<CreditCardDto?> // Detail UI observes this

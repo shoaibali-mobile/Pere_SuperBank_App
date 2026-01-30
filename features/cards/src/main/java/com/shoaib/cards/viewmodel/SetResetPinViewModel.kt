@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shoaib.cards.data.CardResult
-import com.shoaib.cards.data.repository.CardsRepository
+import com.shoaib.cards.data.credit.repository.CreditCardsRepository
 import com.shoaib.cards.model.CreditCardDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +28,7 @@ sealed class SnackbarEvent {
 @HiltViewModel
 class SetResetPinViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: CardsRepository
+    private val repository: CreditCardsRepository
 ) : ViewModel() {
 
     private val _snackbarEvent = MutableSharedFlow<SnackbarEvent>()

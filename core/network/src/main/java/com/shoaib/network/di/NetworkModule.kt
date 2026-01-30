@@ -15,7 +15,7 @@ import javax.inject.Singleton
 object NetworkModule {
 
     // Use your computer's local IP to access the backend from a real device on the same Wi-Fi
-    private const val BASE_URL = "http://192.168.2.201:8080/"
+    private const val BASE_URL = "http://192.168.1.7:8080/"
 
     @Provides
     @Singleton

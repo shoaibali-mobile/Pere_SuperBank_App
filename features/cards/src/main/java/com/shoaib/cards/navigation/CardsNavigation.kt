@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.shoaib.cards.model.CardType
-import com.shoaib.cards.ui.CardsScreen
+import com.shoaib.cards.ui.CreditCardsScreen
 import com.shoaib.cards.ui.details.CardDetailsScreen
 import com.shoaib.navigation.CardsRoute
 import com.shoaib.navigation.CardDetailsRoute
@@ -27,7 +27,7 @@ fun NavGraphBuilder.cardsGraph(
     onNavigateToRequestAddOnCard: (String) -> Unit
 ) {
     composable<CardsRoute> {
-        CardsScreen(
+        CreditCardsScreen(
             onBackClick = onBack,
             onCardTypeClick = { type ->
                 if (type == CardType.CreditCards) onOpenCardDetails("CREDIT")
