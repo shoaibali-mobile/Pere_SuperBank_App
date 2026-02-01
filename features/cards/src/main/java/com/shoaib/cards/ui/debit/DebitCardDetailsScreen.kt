@@ -13,11 +13,11 @@ fun DebitCardDetailsScreen(
     modifier: Modifier = Modifier,
     cardId: String,
     onBackClick: () -> Unit = {},
-    onManageCardClick: () -> Unit = {},
+    onManageCardClick: (String) -> Unit = {},
     onRedeemClick: () -> Unit = {},
-    onSetResetPinClick: () -> Unit = {},
-    onSetAutopayClick: () -> Unit = {},
-    onRequestAddOnCardClick: () -> Unit = {}
+    onSetResetPinClick: (String) -> Unit = {},
+    onSetAutopayClick: (String) -> Unit = {},
+    onRequestAddOnCardClick: (String) -> Unit = {}
 ) {
     val viewModel: DebitCardDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

@@ -14,8 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.shoaib.cards.model.CardType
 import com.shoaib.cards.model.debit.DebitCardsUiState
-import com.shoaib.cards.ui.components.CardsGrid
-import com.shoaib.cards.ui.components.CardsListContent
+ import com.shoaib.cards.ui.components.CardsListContent
 import com.shoaib.cards.ui.components.NavigationHeader
 import com.shoaib.cards.viewmodel.debit.DebitCardsViewModel
 import com.shoaib.design.components.GlassScaffold
@@ -91,20 +90,6 @@ fun DebitCardsContent(
 
             Spacer(Modifier.height(24.dp))
 
-            CardsGrid(
-                onCardTypeClick = { type ->
-                    if (type == CardType.DebitCards) {
-                        val firstCard = cards.firstOrNull()
-                        if (firstCard != null) {
-                            onCardClick(firstCard.id)
-                        } else {
-                            onCardTypeClick(type)
-                        }
-                    } else {
-                        onCardTypeClick(type)
-                    }
-                }
-            )
         }
     }
 }

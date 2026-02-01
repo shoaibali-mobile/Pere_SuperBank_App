@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shoaib.cards.data.CardResult
 import com.shoaib.cards.data.credit.repository.CreditCardsRepository
+import com.shoaib.cards.data.debit.repository.DebitCardsRepository
 import com.shoaib.cards.model.CreditCardDto
+import com.shoaib.cards.model.debit.DebitCardDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +30,8 @@ sealed class SnackbarEvent {
 @HiltViewModel
 class SetResetPinViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: CreditCardsRepository
+    private val creditRepository: CreditCardsRepository,
+    private val debitRepository: DebitCardsRepository
 ) : ViewModel() {
 
     private val _snackbarEvent = MutableSharedFlow<SnackbarEvent>()
@@ -38,15 +41,25 @@ class SetResetPinViewModel @Inject constructor(
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val cardId: String = checkNotNull(savedStateHandle["cardId"])
+    private val isDebit: Boolean = savedStateHandle.get<Boolean>("isDebit") ?: false
 
-    private val _card = MutableStateFlow<CreditCardDto?>(null)
-    val card: StateFlow<CreditCardDto?> = _card.asStateFlow()
+    private val _creditCard = MutableStateFlow<CreditCardDto?>(null)
+    val creditCard: StateFlow<CreditCardDto?> = _creditCard.asStateFlow()
+
+    private val _debitCard = MutableStateFlow<DebitCardDto?>(null)
+    val debitCard: StateFlow<DebitCardDto?> = _debitCard.asStateFlow()
 
     init {
         viewModelScope.launch {
-            repository.getCardById(cardId)
-                .catch { _card.value = null }
-                .collect { _card.value = it }
+            if (isDebit) {
+                debitRepository.getDebitCardById(cardId)
+                    .catch { _debitCard.value = null }
+                    .collect { _debitCard.value = it }
+            } else {
+                creditRepository.getCardById(cardId)
+                    .catch { _creditCard.value = null }
+                    .collect { _creditCard.value = it }
+            }
         }
     }
 
@@ -59,7 +72,12 @@ class SetResetPinViewModel @Inject constructor(
             }
             _isLoading.value = true
             try {
-                when (val result = repository.setResetPin(cardId, newPin, confirmPin, termsAccepted)) {
+                val result = if (isDebit) {
+                    debitRepository.setResetPin(cardId, newPin, confirmPin, termsAccepted)
+                } else {
+                    creditRepository.setResetPin(cardId, newPin, confirmPin, termsAccepted)
+                }
+                when (result) {
                     is CardResult.Success -> {
                         _snackbarEvent.emit(SnackbarEvent.Success("PIN updated successfully"))
                     }

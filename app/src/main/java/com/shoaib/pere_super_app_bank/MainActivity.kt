@@ -101,8 +101,8 @@ fun AppNavigation() {
             onNavigateToManageLimits = { cardId ->
                 navController.navigate(ManageLimitsRoute(cardId = cardId))
             },
-            onNavigateToSetResetPin = { cardId ->
-                navController.navigate(SetResetPinRoute(cardId = cardId))
+            onNavigateToSetResetPin = { cardId,isDebit ->
+                navController.navigate(SetResetPinRoute(cardId = cardId, isDebit = isDebit))
             },
             onNavigateToSetAutopay = { cardId ->
                 navController.navigate(SetAutopayRoute(cardId = cardId))

@@ -7,4 +7,8 @@ import kotlinx.coroutines.flow.Flow
 interface DebitCardsRepository {
     suspend fun refreshDebitCards(): CardResult<Unit>
     fun getDebitCardsStream(): Flow<List<DebitCardDto>>
+
+    fun getDebitCardById(cardId: String): Flow<DebitCardDto?>
+
+    suspend fun setResetPin(cardId: String, newPIN: String, confirmPIN: String,termsAccepted: Boolean): CardResult<Unit>
 }

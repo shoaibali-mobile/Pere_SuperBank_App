@@ -31,7 +31,7 @@ fun NavGraphBuilder.cardsGraph(
     onNavigateToDebitCards: () -> Unit,
     onNavigateToCreditCards: () -> Unit,
     onNavigateToManageLimits: (String) -> Unit,
-    onNavigateToSetResetPin: (String) -> Unit,
+    onNavigateToSetResetPin: (String, Boolean) -> Unit,
     onNavigateToSetAutopay: (String) -> Unit,
     onNavigateToRequestAddOnCard: (String) -> Unit
 ) {
@@ -83,18 +83,10 @@ fun NavGraphBuilder.cardsGraph(
         DebitCardDetailsScreen(
             cardId = route.cardId,
             onBackClick = onBack,
-            onManageCardClick = {
-                onNavigateToManageLimits(route.cardId)
-            },
-            onSetResetPinClick = {
-                onNavigateToSetResetPin(route.cardId)
-            },
-            onSetAutopayClick = {
-                onNavigateToSetAutopay(route.cardId)
-            },
-            onRequestAddOnCardClick = {
-                onNavigateToRequestAddOnCard(route.cardId)
-            }
+            onManageCardClick = { cardId -> onNavigateToManageLimits(cardId) },
+            onSetResetPinClick = { cardId -> onNavigateToSetResetPin(cardId,true) },
+            onSetAutopayClick = { cardId -> onNavigateToSetAutopay(cardId) },
+            onRequestAddOnCardClick = { cardId -> onNavigateToRequestAddOnCard(cardId) }
         )
     }
 
@@ -103,18 +95,10 @@ fun NavGraphBuilder.cardsGraph(
         CardDetailsScreen(
             cardId = route.cardId,
             onBackClick = onBack,
-            onManageCardClick = {
-                onNavigateToManageLimits(route.cardId)
-            },
-            onSetResetPinClick = {
-                onNavigateToSetResetPin(route.cardId)
-            },
-            onSetAutopayClick = {
-                onNavigateToSetAutopay(route.cardId)
-            },
-            onRequestAddOnCardClick = {
-                onNavigateToRequestAddOnCard(route.cardId)
-            }
+            onManageCardClick = { cardId -> onNavigateToManageLimits(cardId) },
+            onSetResetPinClick = { cardId -> onNavigateToSetResetPin(cardId,false) },
+            onSetAutopayClick = { cardId -> onNavigateToSetAutopay(cardId) },
+            onRequestAddOnCardClick = { cardId -> onNavigateToRequestAddOnCard(cardId) }
         )
     }
     

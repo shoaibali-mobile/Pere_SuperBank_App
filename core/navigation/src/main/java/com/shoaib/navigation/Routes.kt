@@ -47,10 +47,12 @@ data class DebitCardDetailsRoute(val cardId: String)
 data class ManageLimitsRoute(val cardId: String)
 
 @Serializable
-data class SetResetPinRoute(val cardId: String)
+data class SetResetPinRoute(val cardId: String, val isDebit: Boolean = false)
 
 @Serializable
 data class SetAutopayRoute(val cardId: String)
 
 @Serializable
 data class RequestAddOnCardRoute(val cardId: String)
+
+

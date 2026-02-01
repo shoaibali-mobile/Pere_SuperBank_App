@@ -63,4 +63,12 @@ interface CardsApiService {
     suspend fun getDebitCards(
         @Header("Authorization") token: String
     ): ApiResponse<DebitCardsData>
+
+
+    @POST("api/cards/debit/{cardId}/pin")
+    suspend fun setDebitResetPin(
+        @Header("Authorization") token: String,
+        @Path("cardId") cardId: String,
+        @Body request: SetPinRequest
+    ): ApiResponse<Unit>
 }

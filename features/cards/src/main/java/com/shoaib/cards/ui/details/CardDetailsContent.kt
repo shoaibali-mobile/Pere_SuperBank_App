@@ -69,17 +69,19 @@ fun CardDetailsContent(
     modifier: Modifier = Modifier,
     uiState: CardDetailsUiState,
     onBackClick: () -> Unit = {},
-    onManageCardClick: () -> Unit = {},
+    onManageCardClick: (String) -> Unit = {},
     onRedeemClick: () -> Unit = {},
-    onSetResetPinClick: () -> Unit = {},
-    onSetAutopayClick: () -> Unit = {},
-    onRequestAddOnCardClick: () -> Unit = {}
+    onSetResetPinClick: (String) -> Unit = {},
+    onSetAutopayClick: (String) -> Unit = {},
+    onRequestAddOnCardClick: (String) -> Unit = {}
 ) {
     // State to control card flip
     var cardFace by remember { mutableStateOf(CardFace.Front) }
     
     // State to control bottom sheet visibility
     var showBottomSheet by remember { mutableStateOf(false) }
+    // Store current card id when opening sheet so we pass real ID to Manage Limits / Set PIN etc. (not "first_card")
+    var cardIdForSheet by remember { mutableStateOf<String?>(null) }
     
     // Swipe Hint State
     var showSwipeHint by remember { mutableStateOf(false) }
@@ -253,9 +255,12 @@ fun CardDetailsContent(
 
                     Spacer(Modifier.height(24.dp))
 
-                    // Manage Card Button - Show bottom sheet on click
+                    // Manage Card Button - Show bottom sheet on click (store current card id for sheet actions)
                     ManageCardButton(
-                        onClick = { showBottomSheet = true },
+                        onClick = {
+                            cardIdForSheet = currentCard.id
+                            showBottomSheet = true
+                        },
                         modifier = Modifier.padding(horizontal = 20.dp)
                     )
 
@@ -337,20 +342,20 @@ fun CardDetailsContent(
                 onDismiss = { showBottomSheet = false },
                 onManageLimitsClick = {
                     showBottomSheet = false
-                    onManageCardClick()
+                    cardIdForSheet?.let { onManageCardClick(it) }
                 },
                 onManageAutoPayClick = {
                     showBottomSheet = false
-                    onSetAutopayClick()
+                    cardIdForSheet?.let { onSetAutopayClick(it) }
                 },
                 onSetResetPinClick = {
-                    showBottomSheet = false   // close sheet
-                    onSetResetPinClick()
+                    showBottomSheet = false
+                    cardIdForSheet?.let { onSetResetPinClick(it) }
                 },
                 onSmartEmiClick = { /* TODO: Handle SmartEMI */ },
                 onRequestAddOnCardClick = {
                     showBottomSheet = false
-                    onRequestAddOnCardClick()
+                    cardIdForSheet?.let { onRequestAddOnCardClick(it) }
                 },
                 onUpgradeCardClick = { /* TODO: Handle upgrade card */ },
                 onIncreaseCreditLimitClick = { /* TODO: Handle increase limit */ }

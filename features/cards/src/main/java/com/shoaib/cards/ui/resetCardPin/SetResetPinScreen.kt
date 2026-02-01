@@ -31,7 +31,9 @@ import com.shoaib.cards.ui.resetCardPin.components.PinInputSection
 import com.shoaib.cards.ui.resetCardPin.components.RequestPhysicalPinButton
 import com.shoaib.cards.ui.components.ScreenTopBar
 import com.shoaib.cards.ui.resetCardPin.components.TermsCheckboxRow
+import com.shoaib.cards.model.CreditCardDto
 import com.shoaib.cards.utils.maskCardNumberForPin
+import com.shoaib.cards.model.debit.DebitCardDto
 import com.shoaib.cards.viewmodel.SetResetPinViewModel
 import com.shoaib.cards.viewmodel.SnackbarEvent
 import com.shoaib.design.components.GlassScaffold
@@ -48,8 +50,11 @@ fun SetResetPinScreen(
     onBackClick: () -> Unit
 ) {
     val viewModel: SetResetPinViewModel = hiltViewModel()
-    val card by viewModel.card.collectAsState()
-    val cardNumberDisplay = card?.cardNumber?.maskCardNumberForPin() ?: "**** **** **** ****"
+    val creditCard by viewModel.creditCard.collectAsState(initial = null as CreditCardDto?)
+    val debitCard by viewModel.debitCard.collectAsState(initial = null as DebitCardDto?)
+    val cardNumberDisplay = creditCard?.cardNumber?.maskCardNumberForPin()
+        ?: debitCard?.cardNumber?.maskCardNumberForPin()
+        ?: "**** **** **** ****"
     GlassScaffold(modifier = modifier) { innerPadding ->
         SetResetPinScreenContent(
             viewModel = viewModel,
